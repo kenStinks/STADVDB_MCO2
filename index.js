@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 
 app.use(session({
-
+    secret: 'sessionID'
 }));
 
 app.set('view engine', 'hbs');
