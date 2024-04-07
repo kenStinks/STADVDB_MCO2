@@ -1,0 +1,157 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
+
+body{
+    margin: 0;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+
+    font-family: "Roboto", sans-serif;
+
+    background-color: rgb(234, 234, 234);
+}
+
+nav{
+    color: white;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    min-width: 65rem;
+}
+
+.toolbar {
+    display: flex;
+    background-image: url(/images/doctor.png),linear-gradient(to bottom, #63BDDA, #5DB3D8);
+    background-position: right 13rem top 1rem, 0;
+    
+    background-size: 10rem,100%;
+    background-repeat: no-repeat;
+
+    justify-content: space-between;
+    padding: 2rem 3rem;
+}
+
+.material-icons.md-48 {
+    font-size: 5rem;
+    margin-right: 2rem;
+}
+
+.connection_status{
+    width: .6rem;
+    height: .6rem;
+    border: white solid .15rem;
+    border-radius: 100%;
+    
+}
+
+.connection_status.connected{
+    background-color: #4cea71;
+    box-shadow: #83ffd2 0 0 1rem;
+}
+
+.connection_status.connected + span::after{
+    content: "Connected"
+}
+
+.connection_status.reconnecting{
+    background-color: #e2ea4c;
+    box-shadow: #dcff83 0 0 1rem;
+}
+
+.connection_status.reconnecting + span::after{
+    content: "Reconnecting"
+}
+
+.connection_status.disconnected{
+    background-color: #ea4c57;
+    box-shadow: #ff8383 0 0 1rem;
+}
+
+.connection_status.disconnected + span::after{
+    content: "Disconnected"
+}
+
+
+.connection_status_div {
+    display: flex;
+    vertical-align: middle;
+    align-items: center;
+    gap: .2rem;
+}
+
+.table_header {
+    display: flex;
+    background-color: #63BDDA;
+
+    padding: .5rem 5rem;
+
+    font-weight: 500;
+
+    border-radius: 0 0 1rem;
+}
+
+.table_header > div {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 6rem;
+}
+
+.button_container{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    vertical-align: middle;
+}
+
+button{
+    border-radius: 100%;
+    border: none;
+    width: 4rem;
+    height: 4rem;
+    background-color: #63BDDA;
+    box-shadow: rgba(0, 0, 0, 0.4) 0 .4rem .4rem;
+
+    cursor: pointer;
+}
+
+button:active{
+    box-shadow: inset rgba(0, 0, 0, 0.4) 0 .4rem .6rem;
+}
+
+button > .material-icons {
+    font-size: 2.5rem;
+    transform: translateY(.2rem);
+    color: white;
+}
+
+button:active > .material-icons {
+    scale: .95;
+}
+
+.table_contents{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    padding: 1rem 3rem 3rem 3rem;
+
+}
+
+.table_entry{
+    background-color: white;
+
+    border-radius: .5rem;
+    display: flex;
+    padding: .5rem 2rem;
+
+    min-width: 55rem;
+}
+
+.table_entry > span {
+    min-width: 6rem;
+    flex: 1;
+}
+

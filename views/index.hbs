@@ -3,9 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="./js/script.js"></script>
+
+    <title>Appointment Viewer</title>
 </head>
 <body>
-    Hello World
+    <nav>
+        <div class="toolbar">
+            <div class="connection_status_div">
+                <span class="material-icons md-48">monitor_heart</span>
+                <span class="connection_status connected"></span>
+                
+                <span>Connection Status: </span>
+            </div>
+            <div class="button_container">
+                <button><span class="material-icons">delete_outline</span></button>
+                <button><span class="material-icons">edit</span></button>
+            </div>
+        </div>
+        <div class="table_header">
+            <div>
+                <span>ID</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
+                <span>Patient</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
+                <span>Clinic</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
+                <span>Doctor</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
+                <span>Status</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
+                <span>Q.Time</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
+                <span>Date</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
+                <span>Start</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
+                <span>End</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
+                <span>Virtual</span>
+                <span class="material-icons">sort</span>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="table_contents">
+        {{#each table}}
+            {{> appointment}}
+        {{/each}}
+    </div>
 </body>
 </html>

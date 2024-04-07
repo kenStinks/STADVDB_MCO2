@@ -1,0 +1,20 @@
+<div class="table_entry">
+    <span>{{AppointmentID}}</span>
+    <span>{{PatientID}}</span>
+    <span>{{ClinicID}}</span>
+    <span>{{DoctorID}}</span>
+    <span>{{Status}}</span>
+    <span>{{TimeQueued}}</span>
+    <span>{{StartTime}}</span>
+    <span>{{EndTime}}</span>
+    <span>{{Type}}</span>
+    {{#if isVirtual}}
+        <span class="material-icons">
+        done
+        </span>
+    {{else}}
+        <span class="material-icons">
+        close
+        </span>
+    {{/if}}
+</div>
