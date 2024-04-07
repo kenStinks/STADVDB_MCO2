@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const routes = require('./routes/routes.js');
 
 const hbs = require('hbs');
 
@@ -23,5 +24,5 @@ app.use('/', routes);
 
 // binds the server to a specific port
 app.listen(port, function () {
-    console.log('app listening at port ' + port);
+    console.log('app listening at http://localhost:' + port);
 });
