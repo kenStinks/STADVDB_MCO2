@@ -115,12 +115,20 @@ button{
     height: 4rem;
     background-color: #63BDDA;
     box-shadow: rgba(0, 0, 0, 0.4) 0 .4rem .4rem;
-
+    transition: 100ms;
     cursor: pointer;
 }
 
 button:active{
     box-shadow: inset rgba(0, 0, 0, 0.4) 0 .4rem .6rem;
+}
+
+.edit #edit_button{
+    box-shadow: inset rgba(0, 0, 0, 0.2) 0 .4rem .6rem, inset rgb(6, 201, 255) 0 .4rem 1rem;
+}
+
+.delete #delete_button{
+    box-shadow: inset rgba(0, 0, 0, 0.2) 0 .4rem .6rem, inset rgb(255, 6, 48) 0 .4rem 1rem;
 }
 
 button > .material-icons {
@@ -129,7 +137,14 @@ button > .material-icons {
     color: white;
 }
 
-button:active > .material-icons {
+button > .material-icons{
+    font-size: 2.5rem;
+    transform: translateY(.2rem);
+    color: white;
+    transition: 100ms;
+}
+
+button:active > .material-icons, .delete #delete_button > .material-icons, .edit #edit_button > .material-icons  {
     scale: .95;
 }
 
@@ -149,6 +164,18 @@ button:active > .material-icons {
     padding: .5rem 2rem;
 
     min-width: 55rem;
+
+    transition: box-shadow 100ms;
+}
+
+.delete .table_entry:hover{
+    box-shadow: 0 0 1rem rgb(255, 6, 93);
+    cursor: pointer;
+}
+
+.edit .table_entry:hover{
+    box-shadow: 0 0 1rem rgb(6, 201, 255);
+    cursor: pointer;
 }
 
 .table_entry > span {
