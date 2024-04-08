@@ -50,6 +50,10 @@
                 <span class="material-icons">sort</span>
             </div>
             <div>
+                <span >Q.Date</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
                 <span>Date</span>
                 <span class="material-icons">sort</span>
             </div>
@@ -77,5 +81,86 @@
     </div>
 
     {{> page_nav}}
+
+    <div class="shadow hide">
+        <div class="delete_popup hide">
+            <span>Are you sure you want to <b>delete</b> this entry?</span>
+            <div class="table_header">
+                <span >ID</span>
+                <span >Patient</span>
+                <span >Clinic</span>
+                <span >Doctor</span>
+                <span >Status</span>
+                <span >Q.Time</span>
+                <span >Q.Date</span>
+                <span >Start</span>
+                <span >End</span>
+                <span >Type</span>
+                <span >Virtual</span>
+            </div>
+            
+            <div class="popup_entry" id="delete_entry">
+                <span class="AppointmentID"></span>
+                <span class="PatientID"></span>
+                <span class="ClinicID"></span>
+                <span class="DoctorID"></span>
+                <span class="Status"></span>
+                <span class="TimeQueued"></span>
+                <span class="QueueDate"></span>
+                <span class="StartTime"></span>
+                <span class="EndTime"></span>
+                <span class="Type"></span>
+                <span class="isVirtual material-icons"></span>
+            </div>
+
+            <button class="cancel">Cancel</button>
+            <button id="confirm_delete">Confirm</button>
+        </div>
+
+        <div class="edit_popup hide">
+            <span>Editing Entry</span>
+            <div class="table_header">
+                <span >ID</span>
+                <span >Patient</span>
+                <span >Clinic</span>
+                <span >Doctor</span>
+                <span >Status</span>
+                <span >Q.Time</span>
+                <span >Q.Date</span>
+                <span >Start</span>
+                <span >End</span>
+                <span >Type</span>
+                <span >Virtual</span>
+            </div>
+            
+            <div class="popup_entry" id="edit_entry">
+                <span class="AppointmentID">123</span>
+                <input type="text" name="PatientID" id="PatientID">
+                <input type="text" name="ClinicID" id="ClinicID">
+                <input type="text" name="DoctorID" id="DoctorID">
+                <select name="Status" id="Status">
+                    <option value="Complete">Complete</option>
+                    <option value="Queued">Queued</option>
+                    <option value="NoShow">NoShow</option>
+                    <option value="Cancel">Cancel</option>
+                    <option value="Serving">Serving</option>
+                    <option value="Skip">Skip</option>
+                    <option value="Admitted">Admitted</option>
+                    </select>
+                    <input type="time" name="TimeQueued" id="TimeQueued">
+                    <input type="date" name="QueueDate" id="QueueDate">
+                    <input type="time" name="StartTime" id="StartTime">
+                    <input type="time" name="EndTime" id="EndTime">
+                    <select name="Type" id="Type">
+                        <option value="Consultation">Consultation</option>
+                        <option value="Inpatient">Inpatient</option>
+                    </select>
+                    <input type="checkbox" name="isVirtual" id="isVirtual">
+            </div>
+
+            <button class="cancel">Cancel</button>
+            <button id="confirm_edit">Confirm</button>
+        </div>
+    </div>
 </body>
 </html>

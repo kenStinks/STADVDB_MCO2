@@ -18,6 +18,7 @@ const controller = {
                 DoctorID: i+4000,
                 Status: statOptions[i%7],
                 TimeQueued: "1:00PM",
+                QueueDate: "9-11-2001",
                 StartTime: "12:00AM",
                 EndTime:"6:00AM",
                 Type:typeOptions[i%2],
