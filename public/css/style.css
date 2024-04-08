@@ -20,6 +20,7 @@ nav{
     position: sticky;
     top: 0;
     min-width: 65rem;
+    z-index: 1000;
 }
 
 .toolbar {
@@ -136,7 +137,7 @@ button:active > .material-icons {
     display: flex;
     flex-direction: column;
     gap: .5rem;
-    padding: 1rem 3rem 3rem 3rem;
+    padding: 0 3rem 0 3rem;
 
 }
 
@@ -153,5 +154,44 @@ button:active > .material-icons {
 .table_entry > span {
     min-width: 6rem;
     flex: 1;
+}
+
+.page_nav{
+    display: flex;
+    justify-content: center;
+    
+    gap: .2rem;
+    margin: 1rem 0;
+}
+
+.page_nav input[type="text"]{
+    height: 1.5rem;
+    width: 3rem;
+    font-size: 1rem;
+
+    border: none;
+    text-align: center;
+    border-radius: .2rem;
+    box-shadow: inset 0 0 .2rem rgba(0, 0, 0, 0.242);
+
+}
+
+.page_nav input[type="submit"]{
+    background-color: #63BDDA;
+    border: none;
+    color: white;
+    border-radius: .2rem;
+    box-shadow: 0 0 .2rem rgba(0, 0, 0, 0.242);
+}
+
+.page_nav input[type="submit"]:active{
+    box-shadow: inset 0 0 .2rem rgba(0, 0, 0, 0.242);
+    scale: .99;
+}
+
+.page_nav input[type="submit"]:disabled{
+    background-color: #b7d7e1;
+    box-shadow: none;
+    scale: 1;
 }
 

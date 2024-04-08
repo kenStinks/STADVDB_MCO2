@@ -1,0 +1,25 @@
+<div class="page_nav">
+        <form action="/">
+            <input type="text" value="{{min_page}}" name="page" id="page" hidden>
+            <input type="submit" class="material-icons" value="first_page" {{#if isFirst}}disabled{{/if}}>
+        </form>
+        <form action="/">
+            <input type="text" value="{{prev_page}}" name="page" id="page" hidden>
+            <input type="submit" class="material-icons" value="navigate_before" {{#if isFirst}}disabled{{/if}}>
+        </form>
+
+        <form action="/">
+            <input type="text" value="{{page}}" name="page" id="page">
+            <input type="submit" hidden >
+        </form>
+
+        <form action="/">
+            <input type="text" value="{{next_page}}" name="page" id="page" hidden>
+            <input type="submit" class="material-icons" value="navigate_next" {{#if isLast}}disabled{{/if}}>
+        </form>
+
+        <form action="/">
+            <input type="text" value="{{max_page}}" name="page" id="page" hidden >
+            <input type="submit" class="material-icons" value="last_page" {{#if isLast}}disabled{{/if}}>
+        </form>
+    </div>

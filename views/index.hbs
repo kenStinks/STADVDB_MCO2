@@ -68,10 +68,14 @@
         </div>
     </nav>
     
+    {{> page_nav}}
+
     <div class="table_contents">
         {{#each table}}
             {{> appointment}}
         {{/each}}
     </div>
+
+    {{> page_nav}}
 </body>
 </html>

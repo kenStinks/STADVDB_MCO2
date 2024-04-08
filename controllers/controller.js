@@ -1,12 +1,16 @@
 const controller = {
 
     getIndex: async function (req, res) {
+        const page = parseInt(req.query.page) || 1
+        const limit = 20 //entries per page
+        const maxpage = 10 //maximum possible page
+
         var table = []
         //test table values
         const statOptions = ["Complete", "Queued", "NoShow", "Cancel", "Serving", "Skip", "Admitted"]
         const typeOptions = ["Consultation", "Inpatient"]
 
-        for(var i=0; i<50; i++){
+        for(var i=page*limit; i<page*limit+limit; i++){
             table.push({
                 AppointmentID: i+1000,
                 PatientID: i+2000,
@@ -23,12 +27,21 @@ const controller = {
         }
         
         data = {
-            table: table
+            table: table,
+
+            page: Math.min(Math.max(page, 1), maxpage),
+            prev_page: Math.max(page-1, 1),
+            next_page: Math.min(page+1, maxpage),
+            min_page: 1,
+            max_page: 10,
+
+            isFirst: (page==1),
+            isLast: (page==maxpage)
+
         }
         
         res.render('index', data);
     },
-    
 }
 
 /*
