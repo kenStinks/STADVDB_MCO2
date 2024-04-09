@@ -71,7 +71,7 @@ $(document).ready(function(){
             StartTime: $('#edit_entry > #StartTime').val(),
             EndTime:$('#edit_entry > #EndTime').val(),
             Type:$('#edit_entry > #Type').val(),
-            isVirtual: $('#edit_entry > #isVirtual').val(),
+            isVirtual: $('#edit_entry > #isVirtual').prop('checked'),
             isDeleted: false,
         }
 
@@ -90,9 +90,7 @@ $(document).ready(function(){
 
         $("#"+id+' > .Type').text(edited_entry.Type);
 
-
-
-        if(edited_entry.isVirtual=='on'){
+        if(edited_entry.isVirtual){
             $("#"+id+' > .isVirtual').text('done');
         } else {$("#"+id+' > .isVirtual').text('close');}
         
