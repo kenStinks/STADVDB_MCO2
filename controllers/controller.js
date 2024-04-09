@@ -17,13 +17,13 @@ const controller = {
                 ClinicID: i+3000,
                 DoctorID: i+4000,
                 Status: statOptions[i%7],
-                TimeQueued: "1:00PM",
-                QueueDate: "9-11-2001",
-                StartTime: "12:00AM",
-                EndTime:"6:00AM",
+                TimeQueued: "1:00 PM",
+                QueueDate: "2001-9-11",
+                StartTime: "12:00 AM",
+                EndTime:"6:00 AM",
                 Type:typeOptions[i%2],
-                isVirtual: (i%2 == 0)
-
+                isVirtual: (i%2 == 0),
+                isDeleted: false
             })
         }
         
