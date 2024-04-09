@@ -21,6 +21,34 @@ async function getData(page,limit) {
     return rows;
   }
 
+  async function deleteData(id) {
+    const [rows] = await pool.query(`
+    DELETE
+    FROM appointments.appointments
+    WHERE AppointmentID = "${id}"
+    `)
+  }
+
+  async function updateData(data) {
+    const [rows] = await pool.query(`
+    UPDATE appointments.appointments
+    SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
+    HospitalName = "${data.HospitalName}",
+    HospitalCity = "${data.HospitalCity}",
+    HospitalRegionName = "${data.HospitalRegionName}",
+    Status = "${data.Status}",
+    Type = "${data.Type}",
+    IsVirtual = ${data.IsVirtualInt},
+
+    TimeQueued = CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
+    QueueDate = CAST('${data.QueueDate}' as DATETIME),
+    StartTime = CAST('1999-01-01 ${data.StartTime}' as DATETIME),
+    EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME)
+
+    WHERE AppointmentID = "${data.id}"
+    `)
+  }
+
 async function getMax(){
     const [rows] = await pool.query(`
     SELECT COUNT(*) as count
@@ -29,13 +57,42 @@ async function getMax(){
     return rows;
 }
 
+function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+  }
+
 const controller = {
 
     getIndex: async function (req, res) {
         const page = parseInt(req.query.page) || 1;
-        const limit = 5; //entries per page
+        const limit = 10; //entries per page
 
-        const table = await getData(page,limit);
+        const rows = await getData(page,limit);
+        console.log(rows);
+
+        var table = rows.map((item) => ({
+            AppointmentID: item.AppointmentID,
+            DoctorMainSpecialty: item.DoctorMainSpecialty,
+            HospitalName: item.HospitalName,
+            HospitalCity: item.HospitalCity,
+            HospitalRegionName: item.HospitalRegionName,
+            Status: item.Status,
+            TimeQueued: formatAMPM(new Date(item.TimeQueued)),
+            QueueDate: new Date(item.QueueDate).toISOString().split('T')[0],
+            StartTime: formatAMPM(new Date(item.StartTime)),
+            EndTime:formatAMPM(new Date(item.EndTime)),
+            Type:item.Type,
+            isVirtual: item.IsVirtual,
+            
+        }));
+
         console.log(table);
 
         var maxpage = await getMax(); //maximum possible page
@@ -57,6 +114,30 @@ const controller = {
         
         res.render('index', data);
     },
+
+    updateID: async function (req, res) {
+        var data = req.body
+        console.log(data.IsVirtual)
+
+        if(data.IsVirtual) 
+        {
+            data.IsVirtualInt = 1;
+        }else {data.IsVirtualInt = 0;}
+        console.log(data)
+
+        updateData(data)
+        
+        
+        
+    },
+
+    deleteID: async function (req, res) {
+        const data = req.body
+        deleteData(data.id)
+        console.log(data)
+    },
+
+
 }
 
 /*

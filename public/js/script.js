@@ -62,7 +62,7 @@ $(document).ready(function(){
     $('#confirm_edit').on('click', function(){
         var id = $('#edit_entry > .AppointmentID').text();
         edited_entry = {
-            AppointmentID: id,
+            id: id,
             DoctorMainSpecialty: $('#edit_entry > #DoctorMainSpecialty').val(),
             HospitalName: $('#edit_entry > #HospitalName').val(),
             HospitalCity: $('#edit_entry > #HospitalCity').val(),
@@ -77,7 +77,12 @@ $(document).ready(function(){
         }
 
         //TODO: update in DB
-        
+        $.ajax({
+            type: "POST",
+            url: '/update',
+            data: edited_entry,
+          });
+
         //update for user end
         $("#"+id+' > .DoctorMainSpecialty').text(edited_entry.DoctorMainSpecialty);
         $("#"+id+' > .HospitalName').text(edited_entry.HospitalName);
@@ -116,6 +121,15 @@ $(document).ready(function(){
         $("#"+id).remove() //remove for user
 
         //TODO: Delete entry with matching ID in DB
+        data = {
+            id: id
+        }
+
+        $.ajax({
+            type: "POST",
+            url: '/delete',
+            data: data,
+          });
 
         console.log(id+' has been deleted');
 
