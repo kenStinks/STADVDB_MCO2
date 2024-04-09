@@ -20,6 +20,8 @@
                 <span>Connection Status: </span>
             </div>
             <div class="button_container">
+                <button id="add_button"><span class="material-icons">add</span></button>
+
                 <button id="delete_button"><span class="material-icons">delete_outline</span></button>
                 <button id="edit_button"><span class="material-icons">edit</span></button>
             </div>
@@ -88,7 +90,7 @@
 
     <div class="shadow hide">
         <div class="delete_popup hide">
-            <span>Are you sure you want to <b>delete</b> this entry?</span>
+            <span>Deleting Entry</span>
             <div class="table_header">
                 <span >ID</span>
                 <span >Doctor Specialty</span>
@@ -171,6 +173,54 @@
 
             <button class="cancel">Cancel</button>
             <button id="confirm_edit">Confirm</button>
+        </div>
+
+        <div class="add_popup hide">
+            <span>Adding Entry</span>
+            <div class="table_header">
+                <span >Doctor Specialty</span>
+                <span >Hospital Name</span>
+                <span >City</span>
+                <span >Region</span>
+                <span >Status</span>
+                <span >Q.Time</span>
+                <span >Q.Date</span>
+                <span >Start</span>
+                <span >End</span>
+                <span >Type</span>
+                <span >Virtual</span>
+            </div>
+            
+            <div class="popup_entry" id="add_entry">
+                <input type="text" name="DoctorMainSpecialty" id="DoctorMainSpecialty">
+                <input type="text" name="HospitalName" id="HospitalName">
+                <input type="text" name="HospitalCity" id="HospitalCity">
+                <input type="text" name="HospitalRegionName" id="HospitalRegionName">
+                
+                <select name="Status" id="Status">
+                    <option value="Complete">Complete</option>
+                    <option value="Queued">Queued</option>
+                    <option value="NoShow">NoShow</option>
+                    <option value="Cancel">Cancel</option>
+                    <option value="Serving">Serving</option>
+                    <option value="Skip">Skip</option>
+                    <option value="Admitted">Admitted</option>
+                </select>
+
+                <input type="time" name="TimeQueued" id="TimeQueued">
+                <input type="date" name="QueueDate" id="QueueDate">
+                <input type="time" name="StartTime" id="StartTime">
+                <input type="time" name="EndTime" id="EndTime">
+                <select name="Type" id="Type">
+                    <option value="Consultation">Consultation</option>
+                    <option value="Inpatient">Inpatient</option>
+                </select>
+                
+                <input type="checkbox" name="isVirtual" id="isVirtual">
+            </div>
+
+            <button class="cancel">Cancel</button>
+            <button id="confirm_add">Confirm</button>
         </div>
     </div>
 </body>

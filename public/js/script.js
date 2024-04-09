@@ -59,6 +59,54 @@ $(document).ready(function(){
         }
     })
 
+    $('#add_button').on('click', function(){
+
+        $('#add_entry > #DoctorMainSpecialty').val('');
+        $('#add_entry > #HospitalName').val('');
+        $('#add_entry > #HospitalCity').val('');
+        $('#add_entry > #HospitalRegionName').val('');
+        $('#add_entry > #Status').val('');
+
+        $('#add_entry > #TimeQueued').val('');
+        $('#add_entry > #QueueDate').val('');
+        $('#add_entry > #StartTime').val('');
+        $('#add_entry > #EndTime').val('');
+
+        $('#add_entry > #Type').val('');
+        $('#add_entry > #isVirtual').prop('checked', false);
+
+        $('.shadow').removeClass('hide')
+        $('.add_popup').removeClass('hide')
+    })
+
+    $('#confirm_add').on('click', function(){
+        //add to database
+        added_entry = {
+            DoctorMainSpecialty: $('#add_entry > #DoctorMainSpecialty').val(),
+            HospitalName: $('#add_entry > #HospitalName').val(),
+            HospitalCity: $('#add_entry > #HospitalCity').val(),
+            HospitalRegionName: $('#add_entry > #HospitalRegionName').val(),
+            Status: $('#add_entry > #Status').val(),
+            TimeQueued: $('#add_entry > #TimeQueued').val(),
+            QueueDate: $('#add_entry > #QueueDate').val(),
+            StartTime: $('#add_entry > #StartTime').val(),
+            EndTime:$('#add_entry > #EndTime').val(),
+            Type:$('#add_entry > #Type').val(),
+            isVirtual: $('#add_entry > #isVirtual').prop('checked'),
+        }
+        
+        $.ajax({
+            type: "POST",
+            url: '/add',
+            data: added_entry,
+          });
+
+
+        //send to last page
+        window.location.href = "/?page=1";
+
+    });
+
     $('#confirm_edit').on('click', function(){
         var id = $('#edit_entry > .AppointmentID').text();
         edited_entry = {
@@ -112,6 +160,7 @@ $(document).ready(function(){
         $('.shadow').addClass('hide')
         $('.delete_popup').addClass('hide')
         $('.edit_popup').addClass('hide')
+        $('.add_popup').addClass('hide')
 
         console.log('deletion canceled');
     })

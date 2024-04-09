@@ -17,6 +17,7 @@ async function getData(page,limit) {
     FROM appointments.appointments
     LIMIT ${limit}
     OFFSET ${(page-1)*limit}
+    
     `)
     return rows;
   }
@@ -49,6 +50,32 @@ async function getData(page,limit) {
     `)
   }
 
+  async function addData(data) {
+    const [rows] = await pool.query(`
+    INSERT INTO appointments.appointments 
+    (DoctorMainSpecialty, HospitalName, HospitalCity, HospitalRegionName, Status, Type, IsVirtual, TimeQueued, QueueDate, StartTime, EndTime,AppointmentID,PatientID,ClinicID,DoctorID,PatientAge,IsHospital,HospitalProvince) VALUES 
+    ("${data.DoctorMainSpecialty}",
+    "${data.HospitalName}",
+    "${data.HospitalCity}",
+    "${data.HospitalRegionName}",
+    "${data.Status}",
+    "${data.Type}",
+    ${data.IsVirtualInt},
+    CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
+    CAST('${data.QueueDate}' as DATETIME),
+    CAST('1999-01-01 ${data.StartTime}' as DATETIME),
+    CAST('1999-01-01 ${data.EndTime}' as DATETIME),
+    REPLACE(uuid(), '-', ''),
+    REPLACE(uuid(), '-', ''),
+    REPLACE(uuid(), '-', ''),
+    REPLACE(uuid(), '-', ''),
+    20,
+    1,
+    ""
+    );
+    `)
+  }
+
 async function getMax(){
     const [rows] = await pool.query(`
     SELECT COUNT(*) as count
@@ -71,11 +98,15 @@ function formatAMPM(date) {
 const controller = {
 
     getIndex: async function (req, res) {
-        const page = parseInt(req.query.page) || 1;
         const limit = 10; //entries per page
+        var maxpage = await getMax(); //maximum possible page
+        var maxpage = Math.ceil(maxpage[0].count/limit)
+
+        const page = Math.min(Math.max(parseInt(req.query.page) || 1, 1), maxpage);
+        
 
         const rows = await getData(page,limit);
-        console.log(rows);
+        //console.log(rows);
 
         var table = rows.map((item) => ({
             AppointmentID: item.AppointmentID,
@@ -93,15 +124,14 @@ const controller = {
             
         }));
 
-        console.log(table);
+        //console.log(table);
 
-        var maxpage = await getMax(); //maximum possible page
-        var maxpage = Math.ceil(maxpage[0].count/limit)
+        
         
         data = {
             table: table,
 
-            page: Math.min(Math.max(page, 1), maxpage),
+            page: page,
             prev_page: Math.max(page-1, 1),
             next_page: Math.min(page+1, maxpage),
             min_page: 1,
@@ -117,9 +147,9 @@ const controller = {
 
     updateID: async function (req, res) {
         var data = req.body
-        console.log(data.IsVirtual)
+        console.log(data.isVirtual)
 
-        if(data.IsVirtual) 
+        if(data.isVirtual) 
         {
             data.IsVirtualInt = 1;
         }else {data.IsVirtualInt = 0;}
@@ -137,7 +167,16 @@ const controller = {
         console.log(data)
     },
 
+    addID: async function (req, res) {
+        var data = req.body
+        if(data.isVirtual) 
+        {
+            data.IsVirtualInt = 1;
+        }else {data.IsVirtualInt = 0;}
 
+        addData(data)
+        console.log(data)
+    },
 }
 
 /*
