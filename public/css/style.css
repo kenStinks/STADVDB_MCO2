@@ -182,6 +182,8 @@ button:active > .material-icons, .delete #delete_button > .material-icons, .edit
 .table_entry > span, .popup_entry > *{
     min-width: 6rem;
     flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .page_nav{

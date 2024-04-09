@@ -1,31 +1,45 @@
+const dotenv = require('dotenv')
+const mysql = require('mysql2')
+dotenv.config();
+
+console.log(process.env.MYSQL_HOST)
+
+const pool = mysql.createPool({
+    host: process.env.MYSQL_HOST,
+    user:  process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
+}).promise()
+
+async function getData(page,limit) {
+    const [rows] = await pool.query(`
+    SELECT * 
+    FROM appointments.appointments
+    LIMIT ${limit}
+    OFFSET ${(page-1)*limit}
+    `)
+    return rows;
+  }
+
+async function getMax(){
+    const [rows] = await pool.query(`
+    SELECT COUNT(*) as count
+    FROM appointments.appointments
+    `)
+    return rows;
+}
+
 const controller = {
 
     getIndex: async function (req, res) {
-        const page = parseInt(req.query.page) || 1
-        const limit = 20 //entries per page
-        const maxpage = 10 //maximum possible page
+        const page = parseInt(req.query.page) || 1;
+        const limit = 5; //entries per page
 
-        var table = []
-        //test table values
-        const statOptions = ["Complete", "Queued", "NoShow", "Cancel", "Serving", "Skip", "Admitted"]
-        const typeOptions = ["Consultation", "Inpatient"]
+        const table = await getData(page,limit);
+        console.log(table);
 
-        for(var i=page*limit; i<page*limit+limit; i++){
-            table.push({
-                AppointmentID: i+1000,
-                PatientID: i+2000,
-                ClinicID: i+3000,
-                DoctorID: i+4000,
-                Status: statOptions[i%7],
-                TimeQueued: "1:00 PM",
-                QueueDate: "2001-9-11",
-                StartTime: "12:00 AM",
-                EndTime:"6:00 AM",
-                Type:typeOptions[i%2],
-                isVirtual: (i%2 == 0),
-                isDeleted: false
-            })
-        }
+        var maxpage = await getMax(); //maximum possible page
+        var maxpage = Math.ceil(maxpage[0].count/limit)
         
         data = {
             table: table,
@@ -34,7 +48,7 @@ const controller = {
             prev_page: Math.max(page-1, 1),
             next_page: Math.min(page+1, maxpage),
             min_page: 1,
-            max_page: 10,
+            max_page: maxpage,
 
             isFirst: (page==1),
             isLast: (page==maxpage)

@@ -20,9 +20,10 @@ $(document).ready(function(){
             var id = $(this).attr('id');
 
             $('#delete_entry > .AppointmentID').text(id);
-            $('#delete_entry > .PatientID').text($("#"+id+' > .PatientID').text());
-            $('#delete_entry > .ClinicID').text($("#"+id+' > .ClinicID').text());
-            $('#delete_entry > .DoctorID').text($("#"+id+' > .DoctorID').text());
+            $('#delete_entry > .DoctorMainSpecialty').text($("#"+id+' > .DoctorMainSpecialty').text());
+            $('#delete_entry > .HospitalName').text($("#"+id+' > .HospitalName').text());
+            $('#delete_entry > .HospitalCity').text($("#"+id+' > .HospitalCity').text());
+            $('#delete_entry > .HospitalRegionName').text($("#"+id+' > .HospitalRegionName').text());
             $('#delete_entry > .Status').text($("#"+id+' > .Status').text());
             $('#delete_entry > .TimeQueued').text($("#"+id+' > .TimeQueued').text());
             $('#delete_entry > .QueueDate').text($("#"+id+' > .QueueDate').text());
@@ -38,16 +39,16 @@ $(document).ready(function(){
             var id = $(this).attr('id');
 
             $('#edit_entry > .AppointmentID').text(id);
-            $('#edit_entry > #PatientID').val($("#"+id+' > .PatientID').text());
-            $('#edit_entry > #ClinicID').val($("#"+id+' > .ClinicID').text());
-            $('#edit_entry > #DoctorID').val($("#"+id+' > .DoctorID').text());
+            $('#edit_entry > #DoctorMainSpecialty').val($("#"+id+' > .DoctorMainSpecialty').text());
+            $('#edit_entry > #HospitalName').val($("#"+id+' > .HospitalName').text());
+            $('#edit_entry > #HospitalCity').val($("#"+id+' > .HospitalCity').text());
+            $('#edit_entry > #HospitalRegionName').val($("#"+id+' > .HospitalRegionName').text());
             $('#edit_entry > #Status').val($("#"+id+' > .Status').text());
 
             $('#edit_entry > #TimeQueued').val(timeToGeneral($("#"+id+' > .TimeQueued').text()));
             $('#edit_entry > #QueueDate').val(makeDate($("#"+id+' > .QueueDate').text()));
             $('#edit_entry > #StartTime').val(timeToGeneral($("#"+id+' > .StartTime').text()));
             $('#edit_entry > #EndTime').val(timeToGeneral($("#"+id+' > .EndTime').text()));
-
 
             $('#edit_entry > #Type').val($("#"+id+' > .Type').text());
             $('#edit_entry > #isVirtual').prop('checked', $("#"+id+' > .isVirtual').text().trim()=='done');
@@ -62,9 +63,10 @@ $(document).ready(function(){
         var id = $('#edit_entry > .AppointmentID').text();
         edited_entry = {
             AppointmentID: id,
-            PatientID: $('#edit_entry > #PatientID').val(),
-            ClinicID: $('#edit_entry > #ClinicID').val(),
-            DoctorID: $('#edit_entry > #DoctorID').val(),
+            DoctorMainSpecialty: $('#edit_entry > #DoctorMainSpecialty').val(),
+            HospitalName: $('#edit_entry > #HospitalName').val(),
+            HospitalCity: $('#edit_entry > #HospitalCity').val(),
+            HospitalRegionName: $('#edit_entry > #HospitalRegionName').val(),
             Status: $('#edit_entry > #Status').val(),
             TimeQueued: $('#edit_entry > #TimeQueued').val(),
             QueueDate: $('#edit_entry > #QueueDate').val(),
@@ -72,15 +74,15 @@ $(document).ready(function(){
             EndTime:$('#edit_entry > #EndTime').val(),
             Type:$('#edit_entry > #Type').val(),
             isVirtual: $('#edit_entry > #isVirtual').prop('checked'),
-            isDeleted: false,
         }
 
         //TODO: update in DB
         
         //update for user end
-        $("#"+id+' > .PatientID').text(edited_entry.PatientID);
-        $("#"+id+' > .ClinicID').text(edited_entry.ClinicID);
-        $("#"+id+' > .DoctorID').text(edited_entry.DoctorID);
+        $("#"+id+' > .DoctorMainSpecialty').text(edited_entry.DoctorMainSpecialty);
+        $("#"+id+' > .HospitalName').text(edited_entry.HospitalName);
+        $("#"+id+' > .HospitalCity').text(edited_entry.HospitalCity);
+        $("#"+id+' > .HospitalRegionName').text(edited_entry.HospitalRegionName);
         $("#"+id+' > .Status').text(edited_entry.Status);
 
         $("#"+id+' > .TimeQueued').text(timeToAMPM(edited_entry.TimeQueued));
@@ -93,8 +95,6 @@ $(document).ready(function(){
         if(edited_entry.isVirtual){
             $("#"+id+' > .isVirtual').text('done');
         } else {$("#"+id+' > .isVirtual').text('close');}
-        
-        
 
         console.log(edited_entry)
 
@@ -135,6 +135,7 @@ function makeDate(x){
 }
 
 function timeToGeneral(date){
+    if (!date) return '';
     var hours = Number(date.match(/^(\d+)/)[1]);
     var minutes = Number(date.match(/:(\d+)/)[1]);
     var AMPM = date.match(/\s(.*)$/)[1];
@@ -149,6 +150,7 @@ function timeToGeneral(date){
 }
 
 function timeToAMPM(date) {
+    if (!date) return '';
     var hours = Number(date.match(/^(\d+)/)[1]);
     var minutes = Number(date.match(/:(\d+)$/)[1]);
     var ampm = hours >= 12 ? 'pm' : 'am';

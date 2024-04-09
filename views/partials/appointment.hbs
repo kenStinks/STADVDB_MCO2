@@ -1,6 +1,27 @@
 {{#unless isDeleted}}  
     <div class="table_entry" id="{{AppointmentID}}">
         <span class="AppointmentID">{{AppointmentID}}</span>
+        <span class="DoctorMainSpecialty">{{DoctorMainSpecialty}}</span>
+        <span class="HospitalName">{{HospitalName}}</span>
+        <span class="HospitalCity">{{HospitalCity}}</span>
+        <span class="HospitalRegionName">{{HospitalRegionName}}</span>
+        <span class="Status">{{Status}}</span>
+        <span class="TimeQueued">{{TimeQueued}}</span>
+        <span class="QueueDate">{{QueueDate}}</span>
+        <span class="StartTime">{{StartTime}}</span>
+        <span class="EndTime">{{EndTime}}</span>
+        <span class="Type">{{Type}}</span>
+        {{#if isVirtual}}
+            <span class="isVirtual material-icons">
+            done
+            </span>
+        {{else}}
+            <span class="isVirtual material-icons">
+            close
+            </span>
+        {{/if}} 
+
+        {{!-- <span class="AppointmentID">{{AppointmentID}}</span>
         <span class="PatientID">{{PatientID}}</span>
         <span class="ClinicID">{{ClinicID}}</span>
         <span class="DoctorID">{{DoctorID}}</span>
@@ -18,6 +39,6 @@
             <span class="isVirtual material-icons">
             close
             </span>
-        {{/if}}
+        {{/if}} --}}
     </div>
 {{/unless}}

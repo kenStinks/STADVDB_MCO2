@@ -30,15 +30,19 @@
                 <span class="material-icons">sort</span>
             </div>
             <div>
-                <span>Patient</span>
+                <span>Doctor Specialty</span>
                 <span class="material-icons">sort</span>
             </div>
             <div>
-                <span>Clinic</span>
+                <span>Hospital Name</span>
                 <span class="material-icons">sort</span>
             </div>
             <div>
-                <span>Doctor</span>
+                <span>City</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
+                <span>Region</span>
                 <span class="material-icons">sort</span>
             </div>
             <div>
@@ -54,15 +58,15 @@
                 <span class="material-icons">sort</span>
             </div>
             <div>
-                <span>Date</span>
-                <span class="material-icons">sort</span>
-            </div>
-            <div>
                 <span>Start</span>
                 <span class="material-icons">sort</span>
             </div>
             <div>
                 <span>End</span>
+                <span class="material-icons">sort</span>
+            </div>
+            <div>
+                <span>Type</span>
                 <span class="material-icons">sort</span>
             </div>
             <div>
@@ -87,9 +91,10 @@
             <span>Are you sure you want to <b>delete</b> this entry?</span>
             <div class="table_header">
                 <span >ID</span>
-                <span >Patient</span>
-                <span >Clinic</span>
-                <span >Doctor</span>
+                <span >Doctor Specialty</span>
+                <span >Hospital Name</span>
+                <span >City</span>
+                <span >Region</span>
                 <span >Status</span>
                 <span >Q.Time</span>
                 <span >Q.Date</span>
@@ -101,9 +106,10 @@
             
             <div class="popup_entry" id="delete_entry">
                 <span class="AppointmentID"></span>
-                <span class="PatientID"></span>
-                <span class="ClinicID"></span>
-                <span class="DoctorID"></span>
+                <span class="DoctorMainSpecialty"></span>
+                <span class="HospitalName"></span>
+                <span class="HospitalCity"></span>
+                <span class="HospitalRegionName"></span>
                 <span class="Status"></span>
                 <span class="TimeQueued"></span>
                 <span class="QueueDate"></span>
@@ -121,9 +127,10 @@
             <span>Editing Entry</span>
             <div class="table_header">
                 <span >ID</span>
-                <span >Patient</span>
-                <span >Clinic</span>
-                <span >Doctor</span>
+                <span >Doctor Specialty</span>
+                <span >Hospital Name</span>
+                <span >City</span>
+                <span >Region</span>
                 <span >Status</span>
                 <span >Q.Time</span>
                 <span >Q.Date</span>
@@ -134,10 +141,12 @@
             </div>
             
             <div class="popup_entry" id="edit_entry">
-                <span class="AppointmentID">123</span>
-                <input type="text" name="PatientID" id="PatientID">
-                <input type="text" name="ClinicID" id="ClinicID">
-                <input type="text" name="DoctorID" id="DoctorID">
+                <span class="AppointmentID"></span>
+                <input type="text" name="DoctorMainSpecialty" id="DoctorMainSpecialty">
+                <input type="text" name="HospitalName" id="HospitalName">
+                <input type="text" name="HospitalCity" id="HospitalCity">
+                <input type="text" name="HospitalRegionName" id="HospitalRegionName">
+                
                 <select name="Status" id="Status">
                     <option value="Complete">Complete</option>
                     <option value="Queued">Queued</option>
@@ -146,16 +155,18 @@
                     <option value="Serving">Serving</option>
                     <option value="Skip">Skip</option>
                     <option value="Admitted">Admitted</option>
-                    </select>
-                    <input type="time" name="TimeQueued" id="TimeQueued">
-                    <input type="date" name="QueueDate" id="QueueDate">
-                    <input type="time" name="StartTime" id="StartTime">
-                    <input type="time" name="EndTime" id="EndTime">
-                    <select name="Type" id="Type">
-                        <option value="Consultation">Consultation</option>
-                        <option value="Inpatient">Inpatient</option>
-                    </select>
-                    <input type="checkbox" name="isVirtual" id="isVirtual">
+                </select>
+
+                <input type="time" name="TimeQueued" id="TimeQueued">
+                <input type="date" name="QueueDate" id="QueueDate">
+                <input type="time" name="StartTime" id="StartTime">
+                <input type="time" name="EndTime" id="EndTime">
+                <select name="Type" id="Type">
+                    <option value="Consultation">Consultation</option>
+                    <option value="Inpatient">Inpatient</option>
+                </select>
+                
+                <input type="checkbox" name="isVirtual" id="isVirtual">
             </div>
 
             <button class="cancel">Cancel</button>
