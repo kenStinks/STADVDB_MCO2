@@ -184,6 +184,10 @@ button:active > .material-icons, .delete #delete_button > .material-icons, .edit
     flex: 1;
 }
 
+.table_entry > .AppointmentID {
+    overflow-wrap: break-word;
+}
+
 .table_entry > .HospitalName:empty:before{
     content: "Clinic";
 }
@@ -257,7 +261,6 @@ button:active > .material-icons, .delete #delete_button > .material-icons, .edit
     font-size: 1.5rem;
     margin-bottom: 1rem;
     margin-left: .5rem;
-    text-wrap: nowrap;
 }
 
 .delete_popup > .table_header, .edit_popup > .table_header , .add_popup > .table_header, .search_popup > .table_header{

@@ -196,11 +196,17 @@ async function addData(data) {
     // const [rows] = await pool.pool_main.query()
 }
 
-async function getMax(){
+async function getMax(query){
     const [rows] = await pool.pool_main.query(
     `
     SELECT COUNT(*) as count
     FROM Appointments.appointments
+    WHERE IsVirtual = ${query.IsVirtual} AND
+    AppointmentID LIKE ${query.AppointmentID} AND
+    DoctorMainSpecialty LIKE ${query.DoctorMainSpecialty} AND
+    HospitalName LIKE ${query.HospitalName} AND
+    HospitalCity LIKE ${query.HospitalCity} AND
+    HospitalRegionName LIKE ${query.HospitalRegionName} 
     `
 )
     return rows;
@@ -273,7 +279,7 @@ const controller = {
         
         
         const limit = 10; //entries per page
-        var maxpage = await getMax(); //maximum possible page
+        var maxpage = await getMax(query); //maximum possible page
         var maxpage = Math.ceil(maxpage[0].count/limit)
 
         const page = Math.min(Math.max(query.page || 1, 1), maxpage);
