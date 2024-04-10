@@ -4,7 +4,7 @@ dotenv.config();
 
 const poolObject = {
     pool_main: mysql.createPool({
-        host: process.env.MYSQL_HOST,
+        host: process.env.MYSQL_MAIN_HOST,
         user:  process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,
@@ -12,7 +12,7 @@ const poolObject = {
         connectionLimit: 100
     }),
     pool_luzon: mysql.createPool({
-        host: process.env.MYSQL_HOST,
+        host: process.env.MYSQL_LUZON_HOST,
         user:  process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,
@@ -20,7 +20,7 @@ const poolObject = {
         connectionLimit: 100
     }),
     pool_vismin: mysql.createPool({
-        host: process.env.MYSQL_HOST,
+        host: process.env.MYSQL_VISMIN_HOST,
         user:  process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,
