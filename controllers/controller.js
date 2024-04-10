@@ -1,8 +1,10 @@
 const dotenv = require('dotenv')
-const mysql = require('mysql2')
+const logs = require('../Helpers/logs.js')
+const pool = require('../helpers/pool.js')
+
 dotenv.config();
 
-console.log(process.env.MYSQL_HOST)
+console.log(process.env.MYSQL_HOST);
 
 const luzonRegions = [
     'National Capital Region (NCR)',
@@ -27,87 +29,174 @@ const visMinRegions = [
     'Bangsamoro (BARMM)'
 ]
 
-const pool = mysql.createPool({
-    host: process.env.MYSQL_HOST,
-    user:  process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
-    port:  process.env.MYSQL_MAIN_PORT
-}).promise()
-
-async function getData(page,limit) {
-    const [rows] = await pool.query(`
-    SELECT * 
-    FROM Appointments.appointments
-    LIMIT ${limit}
-    OFFSET ${(page-1)*limit}
+async function getData(page, limit) {
     
-    `)
-    return rows;
+    // try {
+    //     const [rows] = await pool.pool_main.query(
+    //     `
+    //     SELECT * 
+    //     FROM Appointments.appointments
+    //     LIMIT ${limit}
+    //     OFFSET ${(page-1)*limit}
+    //     `
+    //     )
+    //     console.log(rows);
+    //     return rows;
+    // } catch (error) {
+        
+    // }
+
+    try {
+        var newLimit = math.ceil(limit/2)
+        var [row0] = await pool.pool_luzon.query(
+            `
+            SELECT * 
+            FROM Appointments.appointments
+            LIMIT ${newLimit}
+            OFFSET ${(page-1)*newLimit}
+            `
+            )
+        
+        var [row1] = await pool.pool_vismin.query(
+        `
+        SELECT * 
+        FROM Appointments.appointments
+        LIMIT ${newLimit}
+        OFFSET ${(page-1)*newLimit}
+        `
+        )
+        console.log(row0.concat(row1));
+    } catch (error) {
+        
+    }
 }
 
 async function deleteData(id) {
-    const [rows] = await pool.query(`
-    DELETE
-    FROM Appointments.appointments
-    WHERE AppointmentID = "${id}"
-    `)
+
+    var transactionID = logs.generateUUID();
+    var connection = await pool.pool_main.getConnection();
+    
+    logs.logTransaction(`${transactionID} START DELETE`);
+    try {
+        await connection.beginTransaction();
+    
+        var data = await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${id}"`);
+
+        Object.keys(data).forEach(keys => {
+            logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
+        });
+
+        logs.logTransaction(`${transactionID} COMMIT DELETE`);
+    } catch (error) {
+        logs.logTransaction(`${transactionID} ABORT DELETE`);
+        await connection.rollback()
+        pool.pool_main.releaseConnection();
+    }
+    // const [rows] = await pool.query(
+    // `
+    // SET TRANSACTION LEVEL
+    // DELETE
+    // FROM Appointments.appointments
+    // WHERE AppointmentID = "${id}"
+    // `
 }
 
 async function updateData(data) {
-    const [rows] = await pool.query(`
-    UPDATE Appointments.appointments
-    SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
-    HospitalName = "${data.HospitalName}",
-    HospitalCity = "${data.HospitalCity}",
-    HospitalRegionName = "${data.HospitalRegionName}",
-    Status = "${data.Status}",
-    Type = "${data.Type}",
-    IsVirtual = ${data.IsVirtualInt},
 
-    TimeQueued = CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
-    QueueDate = CAST('${data.QueueDate}' as DATETIME),
-    StartTime = CAST('1999-01-01 ${data.StartTime}' as DATETIME),
-    EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME)
+    var transactionID = logs.generateUUID();
+    var connection = await pool.pool_main.getConnection();
 
-    WHERE AppointmentID = "${data.id}"
-    `)
-  }
+    logs.logTransaction(`${transactionID} START UPDATE`);
+    try {
+        await connection.beginTransaction();
+
+        Object.keys(data).forEach(keys => {
+            logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
+        });
+
+        const query = `
+        UPDATE Appointments.appointments
+        SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
+        HospitalName = "${data.HospitalName}",
+        HospitalCity = "${data.HospitalCity}",
+        HospitalRegionName = "${data.HospitalRegionName}",
+        Status = "${data.Status}",
+        Type = "${data.Type}",
+        IsVirtual = ${data.IsVirtualInt},
+    
+        TimeQueued = CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
+        QueueDate = CAST('${data.QueueDate}' as DATETIME),
+        StartTime = CAST('1999-01-01 ${data.StartTime}' as DATETIME),
+        EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME)
+    
+        WHERE AppointmentID = "${data.id}"
+        `;
+        await connection.query(query);
+        logs.logTransaction(`${transactionID} COMMIT UPDATE`);
+        await connection.commit();
+    } catch (err) {
+        logs.logTransaction(`${transactionID} ABORT UPDATE`);
+        await connection.rollback()
+        pool.pool_main.releaseConnection();
+    }
+}
 
 async function addData(data) {
 
+    var transactionID = logs.generateUUID();
+    var connection = await pool.pool_main.getConnection();
+
+    logs.logTransaction(`${transactionID} START INSERT`);
+    try {
+        await connection.beginTransaction();
+
+        Object.keys(data).forEach(keys => {
+            logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
+        });
+
+        var query = `
+        INSERT INTO Appointments.appointments 
+        (DoctorMainSpecialty, HospitalName, HospitalCity, HospitalRegionName, Status, Type, IsVirtual, TimeQueued, QueueDate, StartTime, EndTime, AppointmentID, PatientID, ClinicID, DoctorID, PatientAge, IsHospital, HospitalProvince) VALUES 
+        ("${data.DoctorMainSpecialty}",
+        "${data.HospitalName}",
+        "${data.HospitalCity}",
+        "${data.HospitalRegionName}",
+        "${data.Status}",
+        "${data.Type}",
+        ${data.IsVirtualInt},
+        CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
+        CAST('${data.QueueDate}' as DATETIME),
+        CAST('1999-01-01 ${data.StartTime}' as DATETIME),
+        CAST('1999-01-01 ${data.EndTime}' as DATETIME),
+        REPLACE(uuid(), '-', ''),
+        REPLACE(uuid(), '-', ''),
+        REPLACE(uuid(), '-', ''),
+        REPLACE(uuid(), '-', ''),
+        20,
+        1,
+        ""
+        );
+        `
+        await connection.query(query);
+        logs.logTransaction(`${transactionID} COMMIT INSERT`);
+        await connection.commit();
+    } catch (error) {
+        logs.logTransaction(`${transactionID} ABORT INSERT`);
+        await connection.rollback()
+        pool.pool_main.releaseConnection();
+    }
 
 
-    const [rows] = await pool.query(`
-    INSERT INTO Appointments.appointments 
-    (DoctorMainSpecialty, HospitalName, HospitalCity, HospitalRegionName, Status, Type, IsVirtual, TimeQueued, QueueDate, StartTime, EndTime,AppointmentID,PatientID,ClinicID,DoctorID,PatientAge,IsHospital,HospitalProvince) VALUES 
-    ("${data.DoctorMainSpecialty}",
-    "${data.HospitalName}",
-    "${data.HospitalCity}",
-    "${data.HospitalRegionName}",
-    "${data.Status}",
-    "${data.Type}",
-    ${data.IsVirtualInt},
-    CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
-    CAST('${data.QueueDate}' as DATETIME),
-    CAST('1999-01-01 ${data.StartTime}' as DATETIME),
-    CAST('1999-01-01 ${data.EndTime}' as DATETIME),
-    REPLACE(uuid(), '-', ''),
-    REPLACE(uuid(), '-', ''),
-    REPLACE(uuid(), '-', ''),
-    REPLACE(uuid(), '-', ''),
-    20,
-    1,
-    ""
-    );
-    `)
+    // const [rows] = await pool.pool_main.query()
 }
 
 async function getMax(){
-    const [rows] = await pool.query(`
+    const [rows] = await pool.pool_main.query(
+    `
     SELECT COUNT(*) as count
     FROM Appointments.appointments
-    `)
+    `
+)
     return rows;
 }
 
@@ -122,29 +211,12 @@ function formatAMPM(date) {
     return strTime;
 }
 
-function selectNode(region) {
-    
-    var pool;
-
+function selectRegion(region) {
     if (luzonRegions.includes(region)) {   
-        pool = mysql.createPool({
-            host: process.env.MYSQL_HOST,
-            user:  process.env.MYSQL_USER,
-            password: process.env.MYSQL_PASSWORD,
-            database: process.env.MYSQL_DATABASE,
-            port:  process.env.MYSQL_LUZON_PORT
-        }).promise()
+        return pool.pool_luzon;
     } else {
-        pool = mysql.createPool({
-            host: process.env.MYSQL_HOST,
-            user:  process.env.MYSQL_USER,
-            password: process.env.MYSQL_PASSWORD,
-            database: process.env.MYSQL_DATABASE,
-            port:  process.env.MYSQL_VISMIN_PORT
-        }).promise()    
+        return pool.pool_vismin;  
     }
-
-    return pool;
 }
 
 const controller = {
@@ -210,9 +282,6 @@ const controller = {
         console.log(data)
 
         updateData(data)
-        
-        
-        
     },
 
     deleteID: async function (req, res) {
