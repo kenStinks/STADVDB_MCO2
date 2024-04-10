@@ -48,7 +48,7 @@ async function getData(query, limit) {
         //console.log(rows);
         return rows;
     } catch (error) {
-        
+        console.log("PRIMARY DATABAS IS OFFLINE");
     }
 
     try {
@@ -77,7 +77,7 @@ async function getData(query, limit) {
     }
 }
 
-async function deleteData(id, region) {
+async function deleteData(id) {
 
     var transactionID = logs.generateUUID();
     var formData = {id: id};
@@ -522,6 +522,7 @@ const controller = {
                 logs.logTransaction(`${transactionID} COMMIT UPDATE`);
                 logs.logTransaction(`${checkpointID} CHECKPOINT`);
                 await connection.commit();
+                pool.pool_current.releaseConnection();
             } catch (err) {
                 logs.logTransaction(`${transactionID} ABORT UPDATE`);
                 logs.logTransaction(`${checkpointID} CHECKPOINT`);
@@ -555,6 +556,8 @@ const controller = {
         
                 logs.logTransaction(`${transactionID} COMMIT DELETE`);
                 logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                await connection.commit();
+                pool.pool_current.releaseConnection();
             } catch (error) {
                 logs.logTransaction(`${transactionID} ABORT DELETE`);
                 logs.logTransaction(`${checkpointID} CHECKPOINT`);
@@ -612,6 +615,7 @@ const controller = {
                 logs.logTransaction(`${transactionID} COMMIT INSERT`);
                 logs.logTransaction(`${checkpointID} CHECKPOINT`);
                 await connection.commit();
+                pool.pool_current.releaseConnection();
             } catch (error) {
                 logs.logTransaction(`${transactionID} ABORT INSERT`);
                 logs.logTransaction(`${checkpointID} CHECKPOINT`);
