@@ -41,7 +41,7 @@ async function getData(query, limit) {
         DoctorMainSpecialty LIKE ${query.DoctorMainSpecialty} AND
         HospitalName LIKE ${query.HospitalName} AND
         HospitalCity LIKE ${query.HospitalCity} AND
-        HospitalRegionName LIKE ${query.HospitalRegionName} 
+        HospitalRegionName LIKE ${query.HospitalRegionName}
         LIMIT ${limit}
         OFFSET ${(query.page-1)*limit}
         `
@@ -244,11 +244,6 @@ const controller = {
             HospitalName: 'HospitalName',
             HospitalCity: 'HospitalCity',
             HospitalRegionName: 'HospitalRegionName',
-
-            TimeQueued: req.query.TimeQueued ||'TimeQueued',
-            QueueDate: req.query.QueueDate ||'QueueDate',
-            StartTime: req.query.StartTime ||'StartTime',
-            EndTime: req.query.EndTime ||'EndTime'
         }
 
         if(req.query.AppointmentID){
