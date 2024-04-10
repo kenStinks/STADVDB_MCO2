@@ -13,3 +13,19 @@ f34a4b82-4a6c-4aae-a0f0-5efd869e588d IsVirtualInt 1
 f34a4b82-4a6c-4aae-a0f0-5efd869e588d EndTime 02:15
 f34a4b82-4a6c-4aae-a0f0-5efd869e588d isVirtual true
 f34a4b82-4a6c-4aae-a0f0-5efd869e588d COMMIT UPDATE
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 START UPDATE
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 id 0000898824452C2A9911EB89BE398099
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 DoctorMainSpecialty OBSTETRICS & GYNECOLOGY
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 HospitalName 
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 HospitalCity Cebu City
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 HospitalRegionName Central Visayas (VII)
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 TimeQueued 03:07
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 QueueDate 2019-08-06
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 Status Queued
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 EndTime 08:00
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 Type Consultation
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 StartTime 08:00
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 isVirtual true
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 IsVirtualInt 1
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 transactionID d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10
+d4b3ce66-28a8-45b9-87a1-a6b2d94f8b10 COMMIT UPDATE

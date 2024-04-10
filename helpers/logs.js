@@ -24,19 +24,19 @@ const logs = {
         });
     },
 
-    startTransaction: function  (type) {
-        fs.readFile('./logs');
-        var UUID = crypto.randomUUID();
-        fs.appendFile(`./logs/logs.txt`, `${UUID} START ${type}`);
+    // startTransaction: function  (type) {
+    //     fs.readFile('./logs');
+    //     var UUID = crypto.randomUUID();
+    //     fs.appendFile(`./logs/logs.txt`, `${UUID} START ${type}`);
 
-        return UUID;
-    },
+    //     return UUID;
+    // },
 
-    endTransaction: function  (UUID, success, type) {
-        fs.readFile('./logs');
-        var UUID = crypto.randomUUID();
-        fs.appendFile(`./logs/logs.txt`, `${success ? 'COMMIT' : 'ABORT'} ${UUID} ${type}`);
-    }
+    // endTransaction: function  (UUID, success, type) {
+    //     fs.readFile('./logs');
+    //     var UUID = crypto.randomUUID();
+    //     fs.appendFile(`./logs/logs.txt`, `${success ? 'COMMIT' : 'ABORT'} ${UUID} ${type}`);
+    // }
 }
 
 module.exports = logs;

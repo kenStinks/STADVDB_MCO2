@@ -1,6 +1,10 @@
+const dotenv = require('dotenv')
 const express = require('express');
 const session = require('express-session');
 const routes = require('./routes/routes.js');
+
+
+dotenv.config();
 
 const hbs = require('hbs');
 
