@@ -133,10 +133,10 @@
             
             <div class="popup_entry" id="edit_entry">
                 <span class="AppointmentID"></span>
-                <input type="text" name="DoctorMainSpecialty" id="DoctorMainSpecialty">
-                <input type="text" name="HospitalName" id="HospitalName">
-                <input type="text" name="HospitalCity" id="HospitalCity">
-                <select name="HospitalRegionName" id="HospitalRegionName">
+                <input type="text" name="DoctorMainSpecialty" id="DoctorMainSpecialty" required>
+                <input type="text" name="HospitalName" id="HospitalName" required>
+                <input type="text" name="HospitalCity" id="HospitalCity" required>
+                <select name="HospitalRegionName" id="HospitalRegionName" required>
                     <optgroup label="Luzon">
                         <option value="National Capital Region (NCR)">National Capital Region (NCR)</option>
                         <option value="Cordillera Administrative Region (CAR)">Cordillera Administrative Region (CAR)</option>
@@ -162,7 +162,7 @@
                     </optgroup>
                 </select>
                 
-                <select name="Status" id="Status">
+                <select name="Status" id="Status" required>
                     <option value="Complete">Complete</option>
                     <option value="Queued">Queued</option>
                     <option value="NoShow">NoShow</option>
@@ -172,16 +172,16 @@
                     <option value="Admitted">Admitted</option>
                 </select>
 
-                <input type="time" name="TimeQueued" id="TimeQueued">
-                <input type="date" name="QueueDate" id="QueueDate">
-                <input type="time" name="StartTime" id="StartTime">
-                <input type="time" name="EndTime" id="EndTime">
-                <select name="Type" id="Type">
+                <input type="time" name="TimeQueued" id="TimeQueued" required>
+                <input type="date" name="QueueDate" id="QueueDate" required>
+                <input type="time" name="StartTime" id="StartTime" required>
+                <input type="time" name="EndTime" id="EndTime" required>
+                <select name="Type" id="Type" required>
                     <option value="Consultation">Consultation</option>
                     <option value="Inpatient">Inpatient</option>
                 </select>
                 
-                <input type="checkbox" name="isVirtual" id="isVirtual">
+                <input type="checkbox" name="isVirtual" id="isVirtual" required>
             </div>
 
             <button class="cancel">Cancel</button>
@@ -205,10 +205,10 @@
             </div>
             
             <div class="popup_entry" id="add_entry">
-                <input type="text" name="DoctorMainSpecialty" id="DoctorMainSpecialty">
-                <input type="text" name="HospitalName" id="HospitalName">
-                <input type="text" name="HospitalCity" id="HospitalCity">
-                <select name="HospitalRegionName" id="HospitalRegionName">
+                <input type="text" name="DoctorMainSpecialty" id="DoctorMainSpecialty" required>
+                <input type="text" name="HospitalName" id="HospitalName" required>
+                <input type="text" name="HospitalCity" id="HospitalCity" required>
+                <select name="HospitalRegionName" id="HospitalRegionName" required>
                     <optgroup label="Luzon">
                         <option value="National Capital Region (NCR)">National Capital Region (NCR)</option>
                         <option value="Cordillera Administrative Region (CAR)">Cordillera Administrative Region (CAR)</option>
@@ -234,7 +234,7 @@
                     </optgroup>
                 </select>
                 
-                <select name="Status" id="Status">
+                <select name="Status" id="Status" required>
                     <option value="Complete">Complete</option>
                     <option value="Queued">Queued</option>
                     <option value="NoShow">NoShow</option>
@@ -244,16 +244,16 @@
                     <option value="Admitted">Admitted</option>
                 </select>
 
-                <input type="time" name="TimeQueued" id="TimeQueued">
-                <input type="date" name="QueueDate" id="QueueDate">
-                <input type="time" name="StartTime" id="StartTime">
-                <input type="time" name="EndTime" id="EndTime">
-                <select name="Type" id="Type">
+                <input type="time" name="TimeQueued" id="TimeQueued" required>
+                <input type="date" name="QueueDate" id="QueueDate" required>
+                <input type="time" name="StartTime" id="StartTime" required>
+                <input type="time" name="EndTime" id="EndTime" required>
+                <select name="Type" id="Type" required>
                     <option value="Consultation">Consultation</option>
                     <option value="Inpatient">Inpatient</option>
                 </select>
                 
-                <input type="checkbox" name="isVirtual" id="isVirtual">
+                <input type="checkbox" name="isVirtual" id="isVirtual" required>
             </div>
 
             <button class="cancel">Cancel</button>
