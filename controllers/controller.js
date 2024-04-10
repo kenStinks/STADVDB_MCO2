@@ -8,13 +8,14 @@ const pool = mysql.createPool({
     host: process.env.MYSQL_HOST,
     user:  process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE
+    database: process.env.MYSQL_DATABASE,
+    port:  process.env.MYSQL_PORT
 }).promise()
 
 async function getData(page,limit) {
     const [rows] = await pool.query(`
     SELECT * 
-    FROM appointments.appointments
+    FROM Appointments.appointments
     LIMIT ${limit}
     OFFSET ${(page-1)*limit}
     
@@ -25,14 +26,14 @@ async function getData(page,limit) {
   async function deleteData(id) {
     const [rows] = await pool.query(`
     DELETE
-    FROM appointments.appointments
+    FROM Appointments.appointments
     WHERE AppointmentID = "${id}"
     `)
   }
 
   async function updateData(data) {
     const [rows] = await pool.query(`
-    UPDATE appointments.appointments
+    UPDATE Appointments.appointments
     SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
     HospitalName = "${data.HospitalName}",
     HospitalCity = "${data.HospitalCity}",
@@ -52,7 +53,7 @@ async function getData(page,limit) {
 
   async function addData(data) {
     const [rows] = await pool.query(`
-    INSERT INTO appointments.appointments 
+    INSERT INTO Appointments.appointments 
     (DoctorMainSpecialty, HospitalName, HospitalCity, HospitalRegionName, Status, Type, IsVirtual, TimeQueued, QueueDate, StartTime, EndTime,AppointmentID,PatientID,ClinicID,DoctorID,PatientAge,IsHospital,HospitalProvince) VALUES 
     ("${data.DoctorMainSpecialty}",
     "${data.HospitalName}",
@@ -79,7 +80,7 @@ async function getData(page,limit) {
 async function getMax(){
     const [rows] = await pool.query(`
     SELECT COUNT(*) as count
-    FROM appointments.appointments
+    FROM Appointments.appointments
     `)
     return rows;
 }
