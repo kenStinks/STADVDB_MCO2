@@ -186,6 +186,10 @@ button:active > .material-icons, .delete #delete_button > .material-icons, .edit
     overflow: hidden;
 }
 
+.table_entry > .HospitalName:empty:before{
+    content: "Clinic";
+}
+
 .page_nav{
     display: flex;
     justify-content: center;
