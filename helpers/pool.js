@@ -3,7 +3,6 @@ const dotenv = require('dotenv')
 dotenv.config();
 
 const poolObject = {
-    
     pool_main: mysql.createPool({
         host: process.env.MYSQL_HOST,
         user:  process.env.MYSQL_USER,
@@ -37,6 +36,5 @@ const poolObject = {
         connectionLimit: 100
     })
 }
-
 
 module.exports = poolObject;

@@ -79,22 +79,23 @@ async function getData(query, limit) {
 
 async function deleteData(id, region) {
 
-    // const d = dnode.connect(process.env.DNODE_PORT);
-
-    // d.on('remote', function (remote) {  
-    //     remote.deleteData(id, function (s) {
-    //         d.end();
-    //     });
-    // })
-
     var transactionID = logs.generateUUID();
     var formData = {id: id};
     formData.transactionID = transactionID;
-    console.log("FORM DATA: " + formData);
+    var checkpointID = logs.generateUUID();
+    formData.checkpointID = checkpointID;
 
-    await axios.post(`http://localhost:3000/delete_solo`, formData
+    await axios.post(`${process.env.VM_INTERNAL_IP_0}/delete_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log('Login: ', err));
+    ).catch(err => console.log(err));
+
+    await axios.post(`${process.env.VM_INTERNAL_IP_1}/delete_solo`, formData
+    ).then(res => console.log(res)
+    ).catch(err => console.log(err));
+
+    await axios.post(`${process.env.VM_INTERNAL_IP_2}/delete_solo`, formData
+    ).then(res => console.log(res)
+    ).catch(err => console.log(err));
 
     // var connection = await selectRegion(region).getConnection();
     
@@ -117,15 +118,27 @@ async function deleteData(id, region) {
 }
 
 async function updateData(data) {
+
     var transactionID = logs.generateUUID();
     var formData = data;
     formData.transactionID = transactionID;
+    var checkpointID = logs.generateUUID();
+    formData.checkpointID = checkpointID;
+
     console.log("FORM DATA: " + formData);
 
-    await axios.post(`http://localhost:3000/update_solo`, formData
+    await axios.post(`${process.env.VM_INTERNAL_IP_0}/update_solo`, formData
     ).then(res => console.log(res)
     ).catch(err => console.log('Login: ', err));
     
+    await axios.post(`${process.env.VM_INTERNAL_IP_1}/update_solo`, formData
+    ).then(res => console.log(res)
+    ).catch(err => console.log('Login: ', err));
+
+    await axios.post(`${process.env.VM_INTERNAL_IP_2}/update_solo`, formData
+    ).then(res => console.log(res)
+    ).catch(err => console.log('Login: ', err));
+
     // axios({
     //     method: 'post',
     //     host: 'localhost',
@@ -238,12 +251,24 @@ async function updateData(data) {
 
 async function addData(data) {
 
+    
     var transactionID = logs.generateUUID();
     var formData = data;
     formData.transactionID = transactionID;
-    console.log("FORM DATA: " + formData);
+    var checkpointID = logs.generateUUID();
+    formData.checkpointID = checkpointID;
+    var AppointmentID = logs.generateUUID();
+    formData.AppointmentID = AppointmentID;
 
-    await axios.post(`http://localhost:3000/add_solo`, formData
+    await axios.post(`${process.env.VM_INTERNAL_IP_0}/add_solo`, formData
+    ).then(res => console.log(res)
+    ).catch(err => console.log('Login: ', err));
+
+    await axios.post(`${process.env.VM_INTERNAL_IP_1}/add_solo`, formData
+    ).then(res => console.log(res)
+    ).catch(err => console.log('Login: ', err));
+
+    await axios.post(`${process.env.VM_INTERNAL_IP_2}/add_solo`, formData
     ).then(res => console.log(res)
     ).catch(err => console.log('Login: ', err));
 
@@ -320,13 +345,25 @@ function formatAMPM(date) {
     return strTime;
 }
 
-function selectRegion(region) {
+function findNode(region) {
     if (luzonRegions.includes(region)) {   
-        return pool.pool_luzon;
+        return 'Luzon';
     } else {
-        return pool.pool_vismin;  
+        return 'VisMin';  
     }
 }
+
+async function selectNode(region) {
+    switch (findNode(req.body.HospitalRegionName)) {
+        case "Luzon":
+            return await pool.pool_luzon.getConnection()
+        case "VisMin":
+            return await pool.pool_vismin.getConnection()
+        default:
+            return null;
+    }
+}
+
 
 const controller = {
 
@@ -448,40 +485,49 @@ const controller = {
         var data = req.body;
 
         var transactionID = req.body.transactionID;
-        var connection = await pool.pool_main.getConnection();
+        var checkpointID = req.body.checkpointID;
 
-        logs.logTransaction(`${transactionID} START UPDATE`);
-        try {
-            await connection.beginTransaction();
+        var connection = await pool.pool_current.getConnection();
 
-            Object.keys(data).forEach(keys => {
-                logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
-            });
-
-            const query = `
-            UPDATE Appointments.appointments
-            SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
-            HospitalName = "${data.HospitalName}",
-            HospitalCity = "${data.HospitalCity}",
-            HospitalRegionName = "${data.HospitalRegionName}",
-            Status = "${data.Status}",
-            Type = "${data.Type}",
-            IsVirtual = ${data.IsVirtualInt},
-        
-            TimeQueued = CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
-            QueueDate = CAST('${data.QueueDate}' as DATETIME),
-            StartTime = CAST('1999-01-01 ${data.StartTime}' as DATETIME),
-            EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME)
-        
-            WHERE AppointmentID = "${data.id}"
-            `;
-            await connection.query(query);
-            logs.logTransaction(`${transactionID} COMMIT UPDATE`);
-            await connection.commit();
-        } catch (err) {
-            logs.logTransaction(`${transactionID} ABORT UPDATE`);
-            await connection.rollback()
-            pool.pool_main.releaseConnection();
+        if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
+            logs.logTransaction(`${transactionID} START UPDATE`);
+            try {
+                await connection.beginTransaction();
+    
+                Object.keys(data).forEach(keys => {
+                    if (keys != 'transactionID' && keys != 'checkpointID') {
+                        logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
+                    }
+                });
+    
+                const query = `
+                UPDATE Appointments.appointments
+                SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
+                HospitalName = "${data.HospitalName}",
+                HospitalCity = "${data.HospitalCity}",
+                HospitalRegionName = "${data.HospitalRegionName}",
+                Status = "${data.Status}",
+                Type = "${data.Type}",
+                IsVirtual = ${data.IsVirtualInt},
+            
+                TimeQueued = CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
+                QueueDate = CAST('${data.QueueDate}' as DATETIME),
+                StartTime = CAST('1999-01-01 ${data.StartTime}' as DATETIME),
+                EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME)
+            
+                WHERE AppointmentID = "${data.id}"
+                `;
+                await connection.query(query);
+    
+                logs.logTransaction(`${transactionID} COMMIT UPDATE`);
+                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                await connection.commit();
+            } catch (err) {
+                logs.logTransaction(`${transactionID} ABORT UPDATE`);
+                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                await connection.rollback()
+                pool.pool_current.releaseConnection();
+            }
         }
     },
 
@@ -490,73 +536,89 @@ const controller = {
         var id = req.body.id;
 
         var transactionID = req.body.transactionID;
- 
-        var connection = await pool.pool_main.getConnection();
+        var checkpointID = req.body.checkpointID;
+
+        var connection = await pool.pool_current.getConnection();
     
-        logs.logTransaction(`${transactionID} START DELETE`);
-        try {
-            await connection.beginTransaction();
+        if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
+            logs.logTransaction(`${transactionID} START DELETE`);
+            try {
+                await connection.beginTransaction();
+            
+                var data = await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${id}"`);
         
-            var data = await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${id}"`);
-    
-            Object.keys(data).forEach(keys => {
-                logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
-            });
-    
-            logs.logTransaction(`${transactionID} COMMIT DELETE`);
-        } catch (error) {
-            logs.logTransaction(`${transactionID} ABORT DELETE`);
-            await connection.rollback()
-            pool.pool_main.releaseConnection();
+                Object.keys(data).forEach(keys => {
+                    if (keys != 'transactionID' && keys != 'checkpointID') {
+                        logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
+                    }
+                });
+        
+                logs.logTransaction(`${transactionID} COMMIT DELETE`);
+                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+            } catch (error) {
+                logs.logTransaction(`${transactionID} ABORT DELETE`);
+                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                await connection.rollback()
+                pool.pool_current.releaseConnection();
+            }
         }
+        
     },
     soloAddID: async function (req, res) {
 
         var data = req.body;
 
         var transactionID = req.body.transactionID;
+        var checkpointID = req.body.checkpointID;
 
-        var connection = await pool.pool_main.getConnection();
+        var connection = await pool.pool_current.getConnection();
 
-        logs.logTransaction(`${transactionID} START INSERT`);
-        try {
-            await connection.beginTransaction();
+        if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
+            logs.logTransaction(`${transactionID} START INSERT`);
+            try {
+                await connection.beginTransaction();
     
-            Object.keys(data).forEach(keys => {
-                logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
-            });
-    
-            var query = `
-            INSERT INTO Appointments.appointments 
-            (DoctorMainSpecialty, HospitalName, HospitalCity, HospitalRegionName, Status, Type, IsVirtual, TimeQueued, QueueDate, StartTime, EndTime, AppointmentID, PatientID, ClinicID, DoctorID, PatientAge, IsHospital, HospitalProvince) VALUES 
-            ("${data.DoctorMainSpecialty}",
-            "${data.HospitalName}",
-            "${data.HospitalCity}",
-            "${data.HospitalRegionName}",
-            "${data.Status}",
-            "${data.Type}",
-            ${data.IsVirtualInt},
-            CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
-            CAST('${data.QueueDate}' as DATETIME),
-            CAST('1999-01-01 ${data.StartTime}' as DATETIME),
-            CAST('1999-01-01 ${data.EndTime}' as DATETIME),
-            REPLACE(uuid(), '-', ''),
-            REPLACE(uuid(), '-', ''),
-            REPLACE(uuid(), '-', ''),
-            REPLACE(uuid(), '-', ''),
-            20,
-            1,
-            ""
-            );
-            `
-            await connection.query(query);
-            logs.logTransaction(`${transactionID} COMMIT INSERT`);
-            await connection.commit();
-        } catch (error) {
-            logs.logTransaction(`${transactionID} ABORT INSERT`);
-            await connection.rollback()
-            pool.pool_main.releaseConnection();
-        }    
+                Object.keys(data).forEach(keys => {
+                    if (keys != 'transactionID' && keys != 'checkpointID') {
+                        logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
+                    }
+                });
+        
+                var query = `
+                INSERT INTO Appointments.appointments 
+                (AppointmentID, DoctorMainSpecialty, HospitalName, HospitalCity, HospitalRegionName, Status, Type, IsVirtual, TimeQueued, QueueDate, StartTime, EndTime, AppointmentID, PatientID, ClinicID, DoctorID, PatientAge, IsHospital, HospitalProvince) VALUES 
+                ("${data.AppointmentID}",
+                "${data.DoctorMainSpecialty}",
+                "${data.HospitalName}",
+                "${data.HospitalCity}",
+                "${data.HospitalRegionName}",
+                "${data.Status}",
+                "${data.Type}",
+                ${data.IsVirtualInt},
+                CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
+                CAST('${data.QueueDate}' as DATETIME),
+                CAST('1999-01-01 ${data.StartTime}' as DATETIME),
+                CAST('1999-01-01 ${data.EndTime}' as DATETIME),
+                REPLACE(uuid(), '-', ''),
+                REPLACE(uuid(), '-', ''),
+                REPLACE(uuid(), '-', ''),
+                REPLACE(uuid(), '-', ''),
+                20,
+                1,
+                ""
+                );
+                `
+                await connection.query(query);
+                logs.logTransaction(`${transactionID} COMMIT INSERT`);
+                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                await connection.commit();
+            } catch (error) {
+                logs.logTransaction(`${transactionID} ABORT INSERT`);
+                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                await connection.rollback()
+                pool.pool_current.releaseConnection();
+            }    
+        }
     }
 }
 
