@@ -4,6 +4,29 @@ dotenv.config();
 
 console.log(process.env.MYSQL_HOST)
 
+const luzonRegions = [
+    'National Capital Region (NCR)',
+    'Cordillera Administrative Region (CAR)',
+    'Ilocos Region(I)',
+    'Cagayan Valley (II)',
+    'Central Luzon (III)',
+    'Calabarzon (IV-A)',
+    'Southwestern Tagalog Region (Mimaropa)',
+    'Bicol Region (V)'
+]
+
+const visMinRegions = [
+    'Western Visayas (VI)',
+    'Central Visayas (VII)',
+    'Eastern Visayas (VIII)',
+    'Zamboanga Peninsula (IX)',
+    'Northern Mindanao (X)',
+    'Davao Region(XI)',
+    'Soccsksargen (XII)',
+    'Caraga (XIII)',
+    'Bangsamoro (BARMM)'
+]
+
 const pool = mysql.createPool({
     host: process.env.MYSQL_HOST,
     user:  process.env.MYSQL_USER,
@@ -21,17 +44,17 @@ async function getData(page,limit) {
     
     `)
     return rows;
-  }
+}
 
-  async function deleteData(id) {
+async function deleteData(id) {
     const [rows] = await pool.query(`
     DELETE
     FROM Appointments.appointments
     WHERE AppointmentID = "${id}"
     `)
-  }
+}
 
-  async function updateData(data) {
+async function updateData(data) {
     const [rows] = await pool.query(`
     UPDATE Appointments.appointments
     SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
@@ -51,7 +74,10 @@ async function getData(page,limit) {
     `)
   }
 
-  async function addData(data) {
+async function addData(data) {
+
+
+
     const [rows] = await pool.query(`
     INSERT INTO Appointments.appointments 
     (DoctorMainSpecialty, HospitalName, HospitalCity, HospitalRegionName, Status, Type, IsVirtual, TimeQueued, QueueDate, StartTime, EndTime,AppointmentID,PatientID,ClinicID,DoctorID,PatientAge,IsHospital,HospitalProvince) VALUES 
@@ -75,7 +101,7 @@ async function getData(page,limit) {
     ""
     );
     `)
-  }
+}
 
 async function getMax(){
     const [rows] = await pool.query(`
@@ -94,7 +120,32 @@ function formatAMPM(date) {
     minutes = minutes < 10 ? '0'+minutes : minutes;
     var strTime = hours + ':' + minutes + ' ' + ampm;
     return strTime;
-  }
+}
+
+function selectNode(region) {
+    
+    var pool;
+
+    if (luzonRegions.includes(region)) {   
+        pool = mysql.createPool({
+            host: process.env.MYSQL_HOST,
+            user:  process.env.MYSQL_USER,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DATABASE,
+            port:  process.env.MYSQL_LUZON_PORT
+        }).promise()
+    } else {
+        pool = mysql.createPool({
+            host: process.env.MYSQL_HOST,
+            user:  process.env.MYSQL_USER,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DATABASE,
+            port:  process.env.MYSQL_VISMIN_PORT
+        }).promise()    
+    }
+
+    return pool;
+}
 
 const controller = {
 
@@ -173,7 +224,7 @@ const controller = {
         if(data.isVirtual) 
         {
             data.IsVirtualInt = 1;
-        }else {data.IsVirtualInt = 0;}
+        } else {data.IsVirtualInt = 0;}
 
         addData(data)
         console.log(data)
