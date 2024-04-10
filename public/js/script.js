@@ -99,8 +99,7 @@ $(document).ready(function(){
             type: "POST",
             url: '/add',
             data: added_entry,
-          });
-
+        });
 
         //send to last page
         window.location.href = "/?page=1";
@@ -108,6 +107,9 @@ $(document).ready(function(){
     });
 
     $('#confirm_edit').on('click', function(){
+
+
+
         var id = $('#edit_entry > .AppointmentID').text();
         edited_entry = {
             id: id,
@@ -222,4 +224,4 @@ function timeToAMPM(date) {
     minutes = minutes < 10 ? '0'+minutes : minutes;
     var strTime = hours + ':' + minutes + ' ' + ampm;
     return strTime;
-  }
+}
