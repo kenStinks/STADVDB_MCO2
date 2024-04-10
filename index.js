@@ -9,7 +9,6 @@ dotenv.config();
 const hbs = require('hbs');
 
 const app = express();
-const port = 3000;
 
 app.use(session({
     secret: 'sessionID'
@@ -27,6 +26,6 @@ app.use(express.static('public'));
 app.use('/', routes);
 
 // binds the server to a specific port
-app.listen(port, function () {
-    console.log('app listening at http://localhost:' + port);
+app.listen(process.env.SERVER_PORT, function () {
+    console.log(`app listening at ${process.env.SERVER_HOST}:` + process.env.SERVER_PORT);
 });
