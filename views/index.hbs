@@ -20,60 +20,49 @@
                 <span>Connection Status: </span>
             </div>
             <div class="button_container">
+                
                 <button id="add_button"><span class="material-icons">add</span></button>
-
                 <button id="delete_button"><span class="material-icons">delete_outline</span></button>
                 <button id="edit_button"><span class="material-icons">edit</span></button>
+                <button id="search_button"><span class="material-icons">search</span></button>
             </div>
         </div>
         <div class="table_header">
             <div>
                 <span>ID</span>
-                <span class="material-icons">sort</span>
             </div>
             <div>
                 <span>Doctor Specialty</span>
-                <span class="material-icons">sort</span>
             </div>
             <div>
                 <span>Hospital Name</span>
-                <span class="material-icons">sort</span>
             </div>
             <div>
                 <span>City</span>
-                <span class="material-icons">sort</span>
             </div>
             <div>
                 <span>Region</span>
-                <span class="material-icons">sort</span>
             </div>
             <div>
                 <span>Status</span>
-                <span class="material-icons">sort</span>
             </div>
             <div>
                 <span>Q.Time</span>
-                <span class="material-icons">sort</span>
             </div>
             <div>
                 <span >Q.Date</span>
-                <span class="material-icons">sort</span>
             </div>
             <div>
                 <span>Start</span>
-                <span class="material-icons">sort</span>
             </div>
             <div>
                 <span>End</span>
-                <span class="material-icons">sort</span>
             </div>
             <div>
                 <span>Type</span>
-                <span class="material-icons">sort</span>
             </div>
             <div>
                 <span>Virtual</span>
-                <span class="material-icons">sort</span>
             </div>
         </div>
     </nav>
@@ -269,6 +258,91 @@
 
             <button class="cancel">Cancel</button>
             <button id="confirm_add">Confirm</button>
+        </div>
+
+        <div class="search_popup hide">
+            <span>Searching Entry</span>
+            <div class="table_header">
+                <span >ID</span>
+                <span >Doctor Specialty</span>
+                <span >Hospital Name</span>
+                <span >City</span>
+                <span >Region</span>
+                <span >Status</span>
+                <span >Q.Time</span>
+                <span >Q.Date</span>
+                <span >Start</span>
+                <span >End</span>
+                <span >Type</span>
+                <span >Virtual</span>
+            </div>
+            
+            <form action="/">
+            <div class="popup_entry" id="search_entry">
+                <input type="text" name="AppointmentID" id="AppointmentID">
+                <input type="text" name="DoctorMainSpecialty" id="DoctorMainSpecialty">
+                <input type="text" name="HospitalName" id="HospitalName">
+                <input type="text" name="HospitalCity" id="HospitalCity">
+                <select name="HospitalRegionName" id="HospitalRegionName">
+                    <optgroup label="Luzon">
+                        <option value="National Capital Region (NCR)">National Capital Region (NCR)</option>
+                        <option value="Cordillera Administrative Region (CAR)">Cordillera Administrative Region (CAR)</option>
+                        <option value="Ilocos Region(I)">Ilocos Region(I)</option>
+                        <option value="Cagayan Valley (II)">Cagayan Valley (II)</option>
+                        <option value="Central Luzon (III)">Central Luzon (III)</option>
+                        <option value="Calabarzon (IV-A)">Calabarzon (IV-A)</option>
+                        <option value="Southwestern Tagalog Region (Mimaropa)">Southwestern Tagalog Region (Mimaropa)</option>
+                        <option value="Bicol Region (V)">Bicol Region (V)</option>
+                    </optgroup>
+                    <optgroup label="Visayas">
+                        <option value="Western Visayas (VI)">Western Visayas (VI)</option>
+                        <option value="Central Visayas (VII)">Central Visayas (VII)</option>
+                        <option value="Eastern Visayas (VIII)">Eastern Visayas (VIII)</option>
+                    </optgroup>
+                    <optgroup label="Mindanao">
+                        <option value="Zamboanga Peninsula (IX)">Zamboanga Peninsula (IX)</option>
+                        <option value="Northern Mindanao (X)">Northern Mindanao (X)</option>
+                        <option value="Davao Region(XI)">Davao Region(XI)</option>
+                        <option value="Soccsksargen (XII)">Soccsksargen (XII)</option>
+                        <option value="Caraga (XIII)">Caraga (XIII)</option>
+                        <option value="Bangsamoro (BARMM)">Bangsamoro (BARMM)</option>
+                    </optgroup>
+                </select>
+                
+                <select name="Status" id="Status">
+                    <option value="Complete">Complete</option>
+                    <option value="Queued">Queued</option>
+                    <option value="NoShow">NoShow</option>
+                    <option value="Cancel">Cancel</option>
+                    <option value="Serving">Serving</option>
+                    <option value="Skip">Skip</option>
+                    <option value="Admitted">Admitted</option>
+                </select>
+
+                <input type="time" name="TimeQueued" id="TimeQueued">
+                <input type="date" name="QueueDate" id="QueueDate">
+                <input type="time" name="StartTime" id="StartTime">
+                <input type="time" name="EndTime" id="EndTime">
+
+                <select name="Type" id="Type">
+                    <option value="Consultation">Consultation</option>
+                    <option value="Inpatient">Inpatient</option>
+                </select>
+                
+                
+                <select name="isVirtual" id="isVirtual">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                
+            </div>
+
+            <input type="submit" id="confirm_search" value="Search">
+            </form>
+
+            <button class="cancel">Cancel</button>
+            
         </div>
     </div>
 </body>

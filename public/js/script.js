@@ -79,6 +79,26 @@ $(document).ready(function(){
         $('.add_popup').removeClass('hide')
     })
 
+
+    $('#search_button').on('click', function(){
+        $('#search_entry > #DoctorMainSpecialty').val('');
+        $('#search_entry > #HospitalName').val('');
+        $('#search_entry > #HospitalCity').val('');
+        $('#search_entry > #HospitalRegionName').val('');
+        $('#search_entry > #Status').val('');
+
+        $('#search_entry > #TimeQueued').val('');
+        $('#search_entry > #QueueDate').val('');
+        $('#search_entry > #StartTime').val('');
+        $('#search_entry > #EndTime').val('');
+
+        $('#search_entry > #Type').val('');
+        $('#search_entry > #isVirtual').val('');
+
+        $('.shadow').removeClass('hide')
+        $('.search_popup').removeClass('hide')
+    });
+
     $('#confirm_add').on('click', function(){
         //add to database
         added_entry = {
@@ -161,7 +181,7 @@ $(document).ready(function(){
         $('.delete_popup').addClass('hide')
         $('.edit_popup').addClass('hide')
         $('.add_popup').addClass('hide')
-
+        $('.search_popup').addClass('hide')
         console.log('deletion canceled');
     })
 

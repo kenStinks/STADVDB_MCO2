@@ -150,6 +150,8 @@ function selectNode(region) {
 const controller = {
 
     getIndex: async function (req, res) {
+        console.log(req.query)
+
         const limit = 10; //entries per page
         var maxpage = await getMax(); //maximum possible page
         var maxpage = Math.ceil(maxpage[0].count/limit)
@@ -182,7 +184,7 @@ const controller = {
         
         data = {
             table: table,
-
+            query: req.query,
             page: page,
             prev_page: Math.max(page-1, 1),
             next_page: Math.min(page+1, maxpage),
