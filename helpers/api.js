@@ -1,4 +1,4 @@
-const logs = require('../Helpers/logs.js')
+const logs = require('../helpers/logs.js')
 const pool = require('../helpers/pool.js')
 const dotenv = require('dotenv')
 

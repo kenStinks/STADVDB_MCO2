@@ -27,6 +27,6 @@ app.use(express.static('public'));
 app.use('/', routes);
 
 // binds the server to a specific port
-app.listen(port, function () {
+app.listen(process.env.SERVER_PORT, process.env.SERVER_HOST, function () {
     console.log('app listening at http://localhost:' + port);
 });
