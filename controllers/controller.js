@@ -28,21 +28,27 @@ const visMinRegions = [
     'Bangsamoro (BARMM)'
 ]
 
-async function getData(page, limit) {
+async function getData(query, limit) {
+    
     try {
         const [rows] = await pool.pool_main.query(
         `
         SELECT * 
         FROM Appointments.appointments
+        WHERE IsVirtual = ${query.IsVirtual} AND
+        AppointmentID LIKE ${query.AppointmentID} AND
+        DoctorMainSpecialty LIKE ${query.DoctorMainSpecialty} AND
+        HospitalName LIKE ${query.HospitalName} AND
+        HospitalCity LIKE ${query.HospitalCity} AND
+        HospitalRegionName LIKE ${query.HospitalRegionName}
         LIMIT ${limit}
-        OFFSET ${(page-1)*limit}
+        OFFSET ${(query.page-1)*limit}
         `
         )
-        console.log(rows);
+        //console.log(rows);
         return rows;
     } catch (error) {
-        console.log("PRIMARY DATABASE IS OFFLINE");
-        console.log("ROUTING TO SECONDARY DATABASES");
+        
     }
 
     try {
@@ -52,7 +58,7 @@ async function getData(page, limit) {
             SELECT * 
             FROM Appointments.appointments
             LIMIT ${newLimit}
-            OFFSET ${(page-1)*newLimit}
+            OFFSET ${(query.page-1)*newLimit}
             `
             )
         
@@ -61,7 +67,7 @@ async function getData(page, limit) {
         SELECT * 
         FROM Appointments.appointments
         LIMIT ${newLimit}
-        OFFSET ${(page-1)*newLimit}
+        OFFSET ${(query.page-1)*newLimit}
         `
         )
         console.log(row0.concat(row1));
@@ -287,11 +293,17 @@ async function addData(data) {
     // const [rows] = await pool.pool_main.query()
 }
 
-async function getMax(){
+async function getMax(query){
     const [rows] = await pool.pool_main.query(
     `
     SELECT COUNT(*) as count
     FROM Appointments.appointments
+    WHERE IsVirtual = ${query.IsVirtual} AND
+    AppointmentID LIKE ${query.AppointmentID} AND
+    DoctorMainSpecialty LIKE ${query.DoctorMainSpecialty} AND
+    HospitalName LIKE ${query.HospitalName} AND
+    HospitalCity LIKE ${query.HospitalCity} AND
+    HospitalRegionName LIKE ${query.HospitalRegionName} 
     `
 )
     return rows;
@@ -319,14 +331,53 @@ function selectRegion(region) {
 const controller = {
 
     getIndex: async function (req, res) {
+        console.log(req.query)
+
+        var query = {
+            page: parseInt(req.query.page) || 1,
+            IsVirtual: 'IsVirtual',
+            AppointmentID: 'AppointmentID',
+            DoctorMainSpecialty: 'DoctorMainSpecialty',
+            HospitalName: 'HospitalName',
+            HospitalCity: 'HospitalCity',
+            HospitalRegionName: 'HospitalRegionName',
+        }
+
+        if(req.query.AppointmentID){
+            query.AppointmentID = `'%${req.query.AppointmentID}%'`
+        }
+        if(req.query.DoctorMainSpecialty){
+            query.DoctorMainSpecialty = `'%${req.query.DoctorMainSpecialty}%'`
+        }
+        if(req.query.HospitalName){
+            query.HospitalName = `'%${req.query.HospitalName}%'`
+        }
+        if(req.query.HospitalCity){
+            query.HospitalCity = `'%${req.query.HospitalCity}%'`
+        }
+        if(req.query.HospitalRegionName){
+            query.HospitalRegionName = `'%${req.query.HospitalRegionName}%'`
+        }
+
+        if(req.query.isVirtual){
+            if (req.query.isVirtual=='Yes'){
+                query.IsVirtual = 1
+            }else if (req.query.isVirtual=='No'){
+                query.IsVirtual = 0
+            }
+        } 
+
+        console.log(query)
+        
+        
         const limit = 10; //entries per page
-        var maxpage = await getMax(); //maximum possible page
+        var maxpage = await getMax(query); //maximum possible page
         var maxpage = Math.ceil(maxpage[0].count/limit)
 
-        const page = Math.min(Math.max(parseInt(req.query.page) || 1, 1), maxpage);
+        const page = Math.min(Math.max(query.page || 1, 1), maxpage);
         
 
-        const rows = await getData(page,limit);
+        const rows = await getData(query,limit);
         //console.log(rows);
 
         var table = rows.map((item) => ({
@@ -348,7 +399,7 @@ const controller = {
         
         data = {
             table: table,
-
+            query: req.query,
             page: page,
             prev_page: Math.max(page-1, 1),
             next_page: Math.min(page+1, maxpage),
