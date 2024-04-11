@@ -30,6 +30,8 @@ app.use(express.static('public'));
 
 app.use('/', routes);
 
+app.use(express.static('logs'));
+
 // binds the server to a specific port
 app.listen(process.env.SERVER_PORT, function () {
     console.log(`app listening at ${process.env.SERVER_HOST}:` + process.env.SERVER_PORT);

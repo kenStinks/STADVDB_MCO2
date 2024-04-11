@@ -56,6 +56,7 @@ async function getData(query, limit) {
 
     await pool.pool_luzon.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
     await pool.pool_vismin.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+    
     await pool.pool_luzon.query('START TRANSACTION');
     await pool.pool_vismin.query('START TRANSACTION');
     try {
@@ -607,7 +608,8 @@ const controller = {
                 
                 var isHospital = data.HospitalName ? 0 : 1;
 
-                var query = `
+                var query = 
+                `
                 INSERT INTO Appointments.appointments 
                 (AppointmentID, 
                     ClinicID, 
@@ -647,7 +649,7 @@ const controller = {
                 ${isHospital},
                 ""
                 );
-                `
+                `;
                 await connection.query(query);
                 logs.logTransaction(`${transactionID}|COMMIT|INSERT`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
@@ -661,6 +663,26 @@ const controller = {
                 pool.pool_current.releaseConnection();
             }    
         }
+    },
+
+    getLog: async function(req, res)
+    {
+        fs.readFile('./logs/logs.txt', (error, data) => {
+            if (error) {
+                console.log(error);
+                throw error;
+            }
+            // const lines = data.toString().split('\n');
+            // console.log(lines);
+            
+            // for (var index = lines.length - 1; index >= lines.length; index--) {
+            //     const split = lines[index].split('|')
+            //     if (split[1] == 'CHECKPOINT') {
+            //         last_checkpoint = split[0];
+            //         return;
+            //     }
+            // }
+        });
     }
 }
 

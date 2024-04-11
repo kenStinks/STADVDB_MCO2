@@ -2,6 +2,7 @@ const fs = require('fs');
 const dotenv = require('dotenv')
 const https = require('https')
 var request = require('request');
+const axios = require('axios');
 
 dotenv.config();
 
@@ -55,7 +56,7 @@ const recovery = {
             request.get(`${server_ip[0]}`+filePath, async function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     var txt = body.toString();
-                    const lines = txt.toString().split('\n');
+                    const lines = body.toString().split('\n');
     
                     // fs.readFile(txt, (error, data) => {
                     //     if (error) {
@@ -224,22 +225,22 @@ const recovery = {
             
             });
         } else {
-            fs.readFile('./logs/logs.txt', (error, data) => {
-                if (error) {
-                    console.log(error);
-                    throw error;
-                }
-                const lines = data.toString().split('\n');
-                console.log(lines);
+            // fs.readFile('./logs/logs.txt', (error, data) => {
+            //     if (error) {
+            //         console.log(error);
+            //         throw error;
+            //     }
+            //     const lines = data.toString().split('\n');
+            //     console.log(lines);
                 
-                for (var index = lines.length - 1; index >= lines.length; index--) {
-                    const split = lines[index].split('|')
-                    if (split[1] == 'CHECKPOINT') {
-                        last_checkpoint = split[0];
-                        return;
-                    }
-                }
-            });
+            //     for (var index = lines.length - 1; index >= lines.length; index--) {
+            //         const split = lines[index].split('|')
+            //         if (split[1] == 'CHECKPOINT') {
+            //             last_checkpoint = split[0];
+            //             return;
+            //         }
+            //     }
+            // });
             
             var start_uuid;
             var current_checkpoint;
@@ -281,7 +282,7 @@ const recovery = {
                     }
     
                     for (let index = start_recover_index; index < lines.length; index++) {
-                        const split = lines[index].split(' ')
+                        const split = lines[index].split('|')
                         if (split[1] == 'START') {
                             start_uuid = split[0];
                             data = {};
@@ -293,21 +294,21 @@ const recovery = {
                                     case "INSERT":
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
-                                        await axios.post(`${process.env.VM_INTERNAL_IP_0}/insert_solo`, formData
+                                        await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/insert_solo`, formData
                                         ).then(res => console.log(res)
                                         ).catch(err => console.log(err));
-                                        break;
-                                    case "UPDATE":
-                                        data.transactionID = split[0];
-                                        data.checkpointID = checkpoint[0];
-                                        await axios.post(`${process.env.VM_INTERNAL_IP_0}/delete_solo`, formData
-                                        ).then(res => console.log(res)
-                                        ).catch(err => console.log(err));    
                                         break;
                                     case "DELETE":
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
-                                        await axios.post(`${process.env.VM_INTERNAL_IP_0}/update_solo`, formData
+                                        await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/delete_solo`, formData
+                                        ).then(res => console.log(res)
+                                        ).catch(err => console.log(err));    
+                                        break;
+                                    case "UPDATE":
+                                        data.transactionID = split[0];
+                                        data.checkpointID = checkpoint[0];
+                                        await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/update_solo`, formData
                                         ).then(res => console.log(res)
                                         ).catch(err => console.log(err));
                                         break;
