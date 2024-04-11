@@ -137,7 +137,6 @@ async function updateData(data) {
     var checkpointID = logs.generateUUID();
     formData.checkpointID = checkpointID;
 
-    
     console.log(process.env.VM_INTERNAL_IP_0);
     await axios.post(`${process.env.VM_INTERNAL_IP_0}/update_solo`, formData
     ).then(res => console.log(res)
@@ -579,6 +578,7 @@ const controller = {
                 await connection.commit();
                 pool.pool_current.releaseConnection();
             } catch (err) {
+                console.log(err);
                 logs.logTransaction(`${transactionID}|ABORT|UPDATE`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 await connection.rollback()
