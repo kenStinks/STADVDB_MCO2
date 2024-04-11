@@ -30,9 +30,9 @@ const visMinRegions = [
 
 async function getData(query, limit) {
     
-    await pool.pool_main.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
-    await pool.pool_main.query('START TRANSACTION');
     try {
+        await pool.pool_main.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+        await pool.pool_main.query('START TRANSACTION');
         const [rows] = await pool.pool_main.query(
         `
         SELECT * 
@@ -54,12 +54,12 @@ async function getData(query, limit) {
         await pool.pool_main.query('COMMIT');
     }
 
-    await pool.pool_luzon.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
-    await pool.pool_vismin.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
-    
-    await pool.pool_luzon.query('START TRANSACTION');
-    await pool.pool_vismin.query('START TRANSACTION');
     try {
+        await pool.pool_luzon.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+        await pool.pool_vismin.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+        
+        await pool.pool_luzon.query('START TRANSACTION');
+        await pool.pool_vismin.query('START TRANSACTION');
         var newLimit = Math.ceil(limit/2)
         var [row0] = await pool.pool_luzon.query(
             `
@@ -137,19 +137,21 @@ async function updateData(data) {
     var checkpointID = logs.generateUUID();
     formData.checkpointID = checkpointID;
 
+    
     console.log(process.env.VM_INTERNAL_IP_0);
-
     await axios.post(`${process.env.VM_INTERNAL_IP_0}/update_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log('UPDATE: ', 'NODE MAIN OFFLINE'));
+    ).catch(err => console.log('UPDATE: ', 'NODE MAIN OFFLINE', err));
     
+    console.log(process.env.VM_INTERNAL_IP_1);
     await axios.post(`${process.env.VM_INTERNAL_IP_1}/update_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log('UPDATE: ', 'NODE LUZON OFFLINE'));
+    ).catch(err => console.log('UPDATE: ', 'NODE LUZON OFFLINE', err));
 
+    console.log(process.env.VM_INTERNAL_IP_2);
     await axios.post(`${process.env.VM_INTERNAL_IP_2}/update_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log('UPDATE: ', 'NODE VISMIN OFFLINE'));
+    ).catch(err => console.log('UPDATE: ', 'NODE VISMIN OFFLINE', err));
 
     // axios({
     //     method: 'post',
