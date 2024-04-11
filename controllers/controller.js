@@ -542,9 +542,9 @@ const controller = {
         var transactionID = req.body.transactionID;
         var checkpointID = req.body.checkpointID;
 
-        var connection = await pool.pool_current.getConnection();
-        await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
+            var connection = await pool.pool_current.getConnection();
+            await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
             logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
                 await connection.beginTransaction();
@@ -594,9 +594,9 @@ const controller = {
         var transactionID = req.body.transactionID;
         var checkpointID = req.body.checkpointID;
 
-        var connection = await pool.pool_current.getConnection();
-        await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
+            var connection = await pool.pool_current.getConnection();
+            await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
             logs.logTransaction(`${transactionID}|START|DELETE`);
             try {
                 await connection.beginTransaction();
@@ -629,9 +629,9 @@ const controller = {
         var transactionID = req.body.transactionID;
         var checkpointID = req.body.checkpointID;
 
-        var connection = await pool.pool_current.getConnection();
-        await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITED');
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
+            var connection = await pool.pool_current.getConnection();
+            await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITED');
             logs.logTransaction(`${transactionID}|START|INSERT`);
             try {
                 await connection.beginTransaction();
