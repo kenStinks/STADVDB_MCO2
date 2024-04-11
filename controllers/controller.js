@@ -257,8 +257,13 @@ async function addData(data) {
     formData.transactionID = transactionID;
     var checkpointID = logs.generateUUID();
     formData.checkpointID = checkpointID;
+
     var AppointmentID = logs.generateUUID();
-    formData.AppointmentID = AppointmentID;
+    formData.AppointmentID = AppointmentID.replace('-', '');
+    var ClinicID = logs.generateUUID();
+    formData.ClinicID = ClinicID.replace('-', '');
+    var DoctorID = logs.generateUUID();
+    formData.DoctorID = DoctorID.replace('-', '');
 
     await axios.post(`${process.env.VM_INTERNAL_IP_0}/add_solo`, formData
     ).then(res => console.log(res)
@@ -573,6 +578,8 @@ const controller = {
 
         var transactionID = req.body.transactionID;
         var checkpointID = req.body.checkpointID;
+        var clinicID = req.body.clinicID;
+        var doctorID = req.body.doctorID;
 
         var connection = await pool.pool_current.getConnection();
 
@@ -586,13 +593,16 @@ const controller = {
                         logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
                     }
                 });
-        
+                
+                var isHospital = data.HospitalName ? 0 : 1;
+
                 var query = `
                 INSERT INTO Appointments.appointments 
-                (AppointmentID, DoctorMainSpecialty, HospitalName, HospitalCity, HospitalRegionName, Status, Type, IsVirtual, TimeQueued, QueueDate, StartTime, EndTime, AppointmentID, PatientID, ClinicID, DoctorID, PatientAge, IsHospital, HospitalProvince) VALUES 
-                ("${data.AppointmentID}",
+                (AppointmentID, ClinicID, DoctorID, PatientID, DoctorMainSpecialty, HospitalName, HospitalCity, HospitalRegionName, Status, Type, IsVirtual, TimeQueued, QueueDate, StartTime, EndTime, AppointmentID, PatientID, ClinicID, DoctorID, PatientAge, IsHospital, HospitalProvince) VALUES 
+                ("${data.AppointmentID}", "${data.ClinicID}", "${data.DoctorID}", "${data.PatientID}",
                 "${data.DoctorMainSpecialty}",
                 "${data.HospitalName}",
+                "${isHospital}",
                 "${data.HospitalCity}",
                 "${data.HospitalRegionName}",
                 "${data.Status}",
@@ -607,7 +617,7 @@ const controller = {
                 REPLACE(uuid(), '-', ''),
                 REPLACE(uuid(), '-', ''),
                 20,
-                1,
+                ${isHospital},
                 ""
                 );
                 `
