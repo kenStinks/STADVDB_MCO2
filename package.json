@@ -15,7 +15,7 @@
     "express-validator": "^7.0.1",
     "hbs": "^4.2.0",
     "http-server": "^14.1.1",
-    "mysql2": "^3.9.4",
+    "mysql2": "^3.0.0",
     "request": "^2.88.2"
   },
   "description": ""
