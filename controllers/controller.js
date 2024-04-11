@@ -30,6 +30,8 @@ const visMinRegions = [
 
 async function getData(query, limit) {
     
+    await pool.pool_main.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+    await pool.pool_main.query('START TRANSACTION');
     try {
         const [rows] = await pool.pool_main.query(
         `
@@ -45,12 +47,17 @@ async function getData(query, limit) {
         OFFSET ${(query.page-1)*limit}
         `
         )
-        //console.log(rows);
+        await pool.pool_main.query('COMMIT');
         return rows;
     } catch (error) {
         console.log("PRIMARY DATABAS IS OFFLINE");
+        await pool.pool_main.query('COMMIT');
     }
 
+    await pool.pool_luzon.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+    await pool.pool_vismin.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+    await pool.pool_luzon.query('START TRANSACTION');
+    await pool.pool_vismin.query('START TRANSACTION');
     try {
         var newLimit = Math.ceil(limit/2)
         var [row0] = await pool.pool_luzon.query(
@@ -70,10 +77,14 @@ async function getData(query, limit) {
         OFFSET ${(query.page-1)*newLimit}
         `
         )
+        await pool.pool_luzon.query('END TRANSACTION');
+        await pool.pool_vismin.query('END TRANSACTION');
         console.log(row0.concat(row1));
         return row0.concat(row1);
     } catch (error) {
         console.log("SECONDARY DATABASES ARE OFFLINE");
+        await pool.pool_luzon.query('END TRANSACTION');
+        await pool.pool_vismin.query('END TRANSACTION');
     }
 }
 
@@ -482,6 +493,7 @@ const controller = {
             data.IsVirtualInt = 1;
         } else {data.IsVirtualInt = 0;}
 
+        await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         addData(data)
         console.log(data)
     },
@@ -494,7 +506,7 @@ const controller = {
         var checkpointID = req.body.checkpointID;
 
         var connection = await pool.pool_current.getConnection();
-
+        await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
@@ -546,7 +558,7 @@ const controller = {
         var checkpointID = req.body.checkpointID;
 
         var connection = await pool.pool_current.getConnection();
-    
+        await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|DELETE`);
             try {
@@ -581,7 +593,7 @@ const controller = {
         var checkpointID = req.body.checkpointID;
 
         var connection = await pool.pool_current.getConnection();
-
+        await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITED');
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|INSERT`);
             try {
