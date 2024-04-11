@@ -337,19 +337,53 @@ async function addData(data) {
 }
 
 async function getMax(query){
+
+    try {
     const [rows] = await pool.pool_main.query(
-    `
-    SELECT COUNT(*) as count
-    FROM Appointments.appointments
-    WHERE IsVirtual = ${query.IsVirtual} AND
-    AppointmentID LIKE ${query.AppointmentID} AND
-    DoctorMainSpecialty LIKE ${query.DoctorMainSpecialty} AND
-    HospitalName LIKE ${query.HospitalName} AND
-    HospitalCity LIKE ${query.HospitalCity} AND
-    HospitalRegionName LIKE ${query.HospitalRegionName} 
-    `
-)
-    return rows;
+        `
+        SELECT COUNT(*) as count
+        FROM Appointments.appointments
+        WHERE IsVirtual = ${query.IsVirtual} AND
+        AppointmentID LIKE ${query.AppointmentID} AND
+        DoctorMainSpecialty LIKE ${query.DoctorMainSpecialty} AND
+        HospitalName LIKE ${query.HospitalName} AND
+        HospitalCity LIKE ${query.HospitalCity} AND
+        HospitalRegionName LIKE ${query.HospitalRegionName} 
+        `  )
+        return rows;
+    } catch (error) {
+        
+    }
+    try {
+        const [rows0] = await pool.pool_luzon.query(
+            `
+            SELECT COUNT(*) as count
+            FROM Appointments.appointments
+            WHERE IsVirtual = ${query.IsVirtual} AND
+            AppointmentID LIKE ${query.AppointmentID} AND
+            DoctorMainSpecialty LIKE ${query.DoctorMainSpecialty} AND
+            HospitalName LIKE ${query.HospitalName} AND
+            HospitalCity LIKE ${query.HospitalCity} AND
+            HospitalRegionName LIKE ${query.HospitalRegionName} 
+            `  
+        )
+        const [rows1] = await pool.pool_luzon.query(
+            `
+            SELECT COUNT(*) as count
+            FROM Appointments.appointments
+            WHERE IsVirtual = ${query.IsVirtual} AND
+            AppointmentID LIKE ${query.AppointmentID} AND
+            DoctorMainSpecialty LIKE ${query.DoctorMainSpecialty} AND
+            HospitalName LIKE ${query.HospitalName} AND
+            HospitalCity LIKE ${query.HospitalCity} AND
+            HospitalRegionName LIKE ${query.HospitalRegionName} 
+            `  
+        )
+        return rows0.concat(rows1);
+    } catch (error) {
+        return [];
+    }
+
 }
 
 function formatAMPM(date) {
