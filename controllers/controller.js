@@ -2,6 +2,9 @@ const dotenv = require('dotenv')
 const logs = require('../helpers/logs.js')
 const pool = require('../helpers/pool.js')
 const axios = require('axios');
+const https = require('https');
+
+var httpsAgent = new https.Agent({rejectUnauthorized: false});
 
 dotenv.config();
 
@@ -542,10 +545,10 @@ const controller = {
         var checkpointID = req.body.checkpointID;
 
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
-            var connection = await pool.pool_current.getConnection();
-            await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
-            logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
+                var connection = await pool.pool_current.getConnection();
+                await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
+                logs.logTransaction(`${transactionID}|START|UPDATE`);
                 await connection.beginTransaction();
     
                 Object.keys(data).forEach(keys => {
@@ -595,10 +598,10 @@ const controller = {
         var checkpointID = req.body.checkpointID;
 
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
-            var connection = await pool.pool_current.getConnection();
-            await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
-            logs.logTransaction(`${transactionID}|START|DELETE`);
             try {
+                var connection = await pool.pool_current.getConnection();
+                await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
+                logs.logTransaction(`${transactionID}|START|DELETE`);
                 await connection.beginTransaction();
             
                 var data = await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${id}"`);
@@ -630,10 +633,10 @@ const controller = {
         var checkpointID = req.body.checkpointID;
 
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
-            var connection = await pool.pool_current.getConnection();
-            await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITED');
-            logs.logTransaction(`${transactionID}|START|INSERT`);
             try {
+                var connection = await pool.pool_current.getConnection();
+                await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITED');
+                logs.logTransaction(`${transactionID}|START|INSERT`);
                 await connection.beginTransaction();
     
                 Object.keys(data).forEach(keys => {
