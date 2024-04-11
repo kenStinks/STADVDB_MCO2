@@ -11,17 +11,15 @@ const recovery = {
         var server_ip;
         switch (database_name) {
             case 'Main':
-                server_ip = [process.env.VM_INTERNAL_IP_1, process.env.VM_INTERNAL_IP_2];
+                server_ip = [process.env.LOG_INTERNAL_IP_1, process.env.LOG_INTERNAL_IP_2];
                 break;
             case 'Luzon':
             case 'Vismin':
-                server_ip = process.env.VM_INTERNAL_IP_0;
+                server_ip = process.env.LOG_INTERNAL_IP_0;
                 break;
             default:
                 break;
         }
-
-        server_ip = 'http://127.0.0.1:8080'
         
         const file = fs.createWriteStream("data.txt");
 
@@ -41,7 +39,7 @@ const recovery = {
             console.log(lines);
             
             for (var index = lines.length - 1; index >= lines.length; index--) {
-                const split = lines[index].split(' ')
+                const split = lines[index].split('|')
                 if (split[1] == 'CHECKPOINT') {
                     last_checkpoint = split[0];
                     return;
@@ -80,7 +78,7 @@ const recovery = {
                 console.log(lines.length);
 
                 for (var index = lines.length - 1; index >= lines.length; index--) {
-                    const split = lines[index].split(' ')
+                    const split = lines[index].split('|')
                     if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
                         start_recover_index = lines.length - index + 1;
                         console.log("lines: " + start_recover_index);
@@ -95,7 +93,7 @@ const recovery = {
                         data = {};
                     } else if (split[1] == 'COMMIT') {
                         if (start_uuid == split[0]) {
-                            const checkpoint = lines[index + 1].split(' ')
+                            const checkpoint = lines[index + 1].split('|')
                             
                             switch (split[2]) {
                                 case "INSERT":

@@ -87,15 +87,15 @@ async function deleteData(id) {
 
     await axios.post(`${process.env.VM_INTERNAL_IP_0}/delete_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log(err));
+    ).catch(err => console.log('DELETE: ', 'NODE MAIN OFFLINE'));
 
     await axios.post(`${process.env.VM_INTERNAL_IP_1}/delete_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log(err));
+    ).catch(err => console.log('DELETE: ', 'NODE LUZON OFFLINE'));
 
     await axios.post(`${process.env.VM_INTERNAL_IP_2}/delete_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log(err));
+    ).catch(err => console.log('DELETE: ', 'NODE VISMIN OFFLINE'));
 
     // var connection = await selectRegion(region).getConnection();
     
@@ -125,19 +125,19 @@ async function updateData(data) {
     var checkpointID = logs.generateUUID();
     formData.checkpointID = checkpointID;
 
-    console.log("FORM DATA: " + formData);
+    console.log(process.env.VM_INTERNAL_IP_0);
 
     await axios.post(`${process.env.VM_INTERNAL_IP_0}/update_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log('Login: ', err));
+    ).catch(err => console.log('UPDATE: ', 'NODE MAIN OFFLINE'));
     
     await axios.post(`${process.env.VM_INTERNAL_IP_1}/update_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log('Login: ', err));
+    ).catch(err => console.log('UPDATE: ', 'NODE LUZON OFFLINE'));
 
     await axios.post(`${process.env.VM_INTERNAL_IP_2}/update_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log('Login: ', err));
+    ).catch(err => console.log('UPDATE: ', 'NODE VISMIN OFFLINE'));
 
     // axios({
     //     method: 'post',
@@ -259,23 +259,24 @@ async function addData(data) {
     formData.checkpointID = checkpointID;
 
     var AppointmentID = logs.generateUUID();
-    formData.AppointmentID = AppointmentID.replace('-', '');
+    formData.AppointmentID = AppointmentID.replaceAll('-', '');
+    console.log(formData.AppointmentID);
     var ClinicID = logs.generateUUID();
-    formData.ClinicID = ClinicID.replace('-', '');
+    formData.ClinicID = ClinicID.replaceAll('-', '');
     var DoctorID = logs.generateUUID();
-    formData.DoctorID = DoctorID.replace('-', '');
+    formData.DoctorID = DoctorID.replaceAll('-', '');
 
     await axios.post(`${process.env.VM_INTERNAL_IP_0}/add_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log('Login: ', err));
+    ).catch(err => console.log('ADD: ', 'NODE MAIN OFFLINE'));
 
     await axios.post(`${process.env.VM_INTERNAL_IP_1}/add_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log('Login: ', err));
+    ).catch(err => console.log('ADD: ', 'NODE LUZON OFFLINE'));
 
     await axios.post(`${process.env.VM_INTERNAL_IP_2}/add_solo`, formData
     ).then(res => console.log(res)
-    ).catch(err => console.log('Login: ', err));
+    ).catch(err => console.log('ADD: ', 'NODE VISMIN OFFLINE'));
 
     // var connection = await pool.pool_main.getConnection();
 
@@ -495,13 +496,13 @@ const controller = {
         var connection = await pool.pool_current.getConnection();
 
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
-            logs.logTransaction(`${transactionID} START UPDATE`);
+            logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
                 await connection.beginTransaction();
     
                 Object.keys(data).forEach(keys => {
                     if (keys != 'transactionID' && keys != 'checkpointID') {
-                        logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
+                        logs.logTransaction(`${transactionID}|${keys}|${data[keys]}`);
                     }
                 });
     
@@ -524,13 +525,13 @@ const controller = {
                 `;
                 await connection.query(query);
     
-                logs.logTransaction(`${transactionID} COMMIT UPDATE`);
-                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                logs.logTransaction(`${transactionID}|COMMIT|UPDATE`);
+                logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 await connection.commit();
                 pool.pool_current.releaseConnection();
             } catch (err) {
-                logs.logTransaction(`${transactionID} ABORT UPDATE`);
-                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                logs.logTransaction(`${transactionID}|ABORT|UPDATE`);
+                logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 await connection.rollback()
                 pool.pool_current.releaseConnection();
             }
@@ -547,7 +548,7 @@ const controller = {
         var connection = await pool.pool_current.getConnection();
     
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
-            logs.logTransaction(`${transactionID} START DELETE`);
+            logs.logTransaction(`${transactionID}|START|DELETE`);
             try {
                 await connection.beginTransaction();
             
@@ -555,17 +556,17 @@ const controller = {
         
                 Object.keys(data).forEach(keys => {
                     if (keys != 'transactionID' && keys != 'checkpointID') {
-                        logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
+                        logs.logTransaction(`${transactionID}|${keys}|${data[keys]}`);
                     }
                 });
         
-                logs.logTransaction(`${transactionID} COMMIT DELETE`);
-                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                logs.logTransaction(`${transactionID}|COMMIT|DELETE`);
+                logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 await connection.commit();
                 pool.pool_current.releaseConnection();
             } catch (error) {
-                logs.logTransaction(`${transactionID} ABORT DELETE`);
-                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                logs.logTransaction(`${transactionID}|ABORT|DELETE`);
+                logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 await connection.rollback()
                 pool.pool_current.releaseConnection();
             }
@@ -578,19 +579,17 @@ const controller = {
 
         var transactionID = req.body.transactionID;
         var checkpointID = req.body.checkpointID;
-        var clinicID = req.body.clinicID;
-        var doctorID = req.body.doctorID;
 
         var connection = await pool.pool_current.getConnection();
 
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
-            logs.logTransaction(`${transactionID} START INSERT`);
+            logs.logTransaction(`${transactionID}|START|INSERT`);
             try {
                 await connection.beginTransaction();
     
                 Object.keys(data).forEach(keys => {
                     if (keys != 'transactionID' && keys != 'checkpointID') {
-                        logs.logTransaction(`${transactionID} ${keys} ${data[keys]}`);
+                        logs.logTransaction(`${transactionID}|${keys}|${data[keys]}`);
                     }
                 });
                 
@@ -598,11 +597,31 @@ const controller = {
 
                 var query = `
                 INSERT INTO Appointments.appointments 
-                (AppointmentID, ClinicID, DoctorID, PatientID, DoctorMainSpecialty, HospitalName, HospitalCity, HospitalRegionName, Status, Type, IsVirtual, TimeQueued, QueueDate, StartTime, EndTime, AppointmentID, PatientID, ClinicID, DoctorID, PatientAge, IsHospital, HospitalProvince) VALUES 
-                ("${data.AppointmentID}", "${data.ClinicID}", "${data.DoctorID}", "${data.PatientID}",
+                (AppointmentID, 
+                    ClinicID, 
+                    DoctorID, 
+                    PatientID, 
+                    DoctorMainSpecialty, 
+                    HospitalName, 
+                    HospitalCity, 
+                    HospitalRegionName, 
+                    Status, 
+                    Type, 
+                    IsVirtual, 
+                    TimeQueued, 
+                    QueueDate, 
+                    StartTime, 
+                    EndTime, 
+                    PatientAge, 
+                    IsHospital, 
+                    HospitalProvince
+                ) VALUES 
+                ("${data.AppointmentID}", 
+                "${data.ClinicID}", 
+                "${data.DoctorID}", 
+                "${data.PatientID}",
                 "${data.DoctorMainSpecialty}",
                 "${data.HospitalName}",
-                "${isHospital}",
                 "${data.HospitalCity}",
                 "${data.HospitalRegionName}",
                 "${data.Status}",
@@ -612,23 +631,20 @@ const controller = {
                 CAST('${data.QueueDate}' as DATETIME),
                 CAST('1999-01-01 ${data.StartTime}' as DATETIME),
                 CAST('1999-01-01 ${data.EndTime}' as DATETIME),
-                REPLACE(uuid(), '-', ''),
-                REPLACE(uuid(), '-', ''),
-                REPLACE(uuid(), '-', ''),
-                REPLACE(uuid(), '-', ''),
                 20,
                 ${isHospital},
                 ""
                 );
                 `
                 await connection.query(query);
-                logs.logTransaction(`${transactionID} COMMIT INSERT`);
-                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                logs.logTransaction(`${transactionID}|COMMIT|INSERT`);
+                logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 await connection.commit();
                 pool.pool_current.releaseConnection();
             } catch (error) {
-                logs.logTransaction(`${transactionID} ABORT INSERT`);
-                logs.logTransaction(`${checkpointID} CHECKPOINT`);
+                console.log("ERR: ", error);
+                logs.logTransaction(`${transactionID}|ABORT|INSERT`);
+                logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 await connection.rollback()
                 pool.pool_current.releaseConnection();
             }    

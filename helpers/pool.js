@@ -28,11 +28,11 @@ const poolObject = {
         connectionLimit: 100
     }),
     pool_current: mysql.createPool({
-        host: process.env.MYSQL_HOST,
+        host: process.env.MYSQL_HOST_CURRENT,
         user:  process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,
-        port:  process.env.VM_IP_CURRENT,
+        port:  process.env.MYSQL_CURRENT_PORT,
         connectionLimit: 100
     })
 }
