@@ -128,8 +128,6 @@ $(document).ready(function(){
 
     $('#confirm_edit').on('click', function(){
 
-
-
         var id = $('#edit_entry > .AppointmentID').text();
         edited_entry = {
             id: id,

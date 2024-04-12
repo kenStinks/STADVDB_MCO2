@@ -560,7 +560,6 @@ const controller = {
         var checkpointID = req.body.checkpointID;
 
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
-            
             logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
                 const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
@@ -572,10 +571,45 @@ const controller = {
                         logs.logTransaction(`${transactionID}|${keys}|${data[keys]}`);
                     }
                 });
-    
-                const query = `
-                UPDATE Appointments.appointments
-                SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
+
+                var isHospital = data.HospitalName ? 0 : 1;
+
+                var query = 
+                `
+                INSERT INTO Appointments.appointments 
+                (   AppointmentID, 
+                    DoctorMainSpecialty, 
+                    HospitalName, 
+                    HospitalCity, 
+                    HospitalRegionName, 
+                    Status, 
+                    Type, 
+                    IsVirtual, 
+                    TimeQueued, 
+                    QueueDate, 
+                    StartTime, 
+                    EndTime, 
+                    PatientAge, 
+                    IsHospital, 
+                    HospitalProvince
+                ) VALUES 
+                ("${data.AppointmentID}", 
+                "${data.DoctorMainSpecialty}",
+                "${data.HospitalName}",
+                "${data.HospitalCity}",
+                "${data.HospitalRegionName}",
+                "${data.Status}",
+                "${data.Type}",
+                ${data.IsVirtualInt},
+                CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
+                CAST('${data.QueueDate}' as DATETIME),
+                CAST('1999-01-01 ${data.StartTime}' as DATETIME),
+                CAST('1999-01-01 ${data.EndTime}' as DATETIME),
+                0,
+                ${isHospital},
+                ""
+                ) ON DUPLICATE KEY UPDATE
+                DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
                 HospitalName = "${data.HospitalName}",
                 HospitalCity = "${data.HospitalCity}",
                 HospitalRegionName = "${data.HospitalRegionName}",
@@ -587,9 +621,26 @@ const controller = {
                 QueueDate = CAST('${data.QueueDate}' as DATETIME),
                 StartTime = CAST('1999-01-01 ${data.StartTime}' as DATETIME),
                 EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME)
-            
-                WHERE AppointmentID = "${data.id}"
+                ;
                 `;
+                
+                // const query = `
+                // UPDATE Appointments.appointments
+                // SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
+                // HospitalName = "${data.HospitalName}",
+                // HospitalCity = "${data.HospitalCity}",
+                // HospitalRegionName = "${data.HospitalRegionName}",
+                // Status = "${data.Status}",
+                // Type = "${data.Type}",
+                // IsVirtual = ${data.IsVirtualInt},
+            
+                // TimeQueued = CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
+                // QueueDate = CAST('${data.QueueDate}' as DATETIME),
+                // StartTime = CAST('1999-01-01 ${data.StartTime}' as DATETIME),
+                // EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME)
+            
+                // WHERE AppointmentID = "${data.id}"
+                // `;
                 await connection.query(query);
     
                 logs.logTransaction(`${transactionID}|COMMIT|UPDATE`);
@@ -600,6 +651,23 @@ const controller = {
                 console.log(err);
                 logs.logTransaction(`${transactionID}|ABORT|UPDATE`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
+            }
+        } else {
+            console.log('Deleting Data due to server region constraints');
+            try {
+                const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
+            
+                var data = await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${id}"`);
+        
+                Object.keys(data).forEach(keys => {
+                    if (keys != 'transactionID' && keys != 'checkpointID') {
+                        logs.logTransaction(`${transactionID}|${keys}|${data[keys]}`);
+                    }
+                });
+
+                connection.release();
+            } catch (error) {
+                console.log(err);
             }
         }
     },
