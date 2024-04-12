@@ -149,7 +149,7 @@ async function updateData(data) {
     formData.checkpointID = checkpointID;
 
     console.log(process.env.VM_INTERNAL_IP_0);
-    await axios.post(`${process.env.VM_INTERNAL_IP_0}/update_solo`, formData
+    await axios.post(`/update_solo`, formData
     ).then(res => console.log(res)
     ).catch(err => console.log('UPDATE: ', 'NODE MAIN OFFLINE', err));
     
