@@ -574,10 +574,21 @@ const controller = {
 
                 var isHospital = data.HospitalName ? 0 : 1;
 
+                const ids = await connection.query(
+                    `
+                    SELECT * 
+                    FROM Appointments.appointments
+                    WHERE AppointmentID = "${data.AppointmentID}"
+                    `
+                );
+
                 var query = 
                 `
                 INSERT INTO Appointments.appointments 
-                (   AppointmentID, 
+                (AppointmentID, 
+                    ClinicID, 
+                    DoctorID, 
+                    PatientID, 
                     DoctorMainSpecialty, 
                     HospitalName, 
                     HospitalCity, 
@@ -594,6 +605,9 @@ const controller = {
                     HospitalProvince
                 ) VALUES 
                 ("${data.AppointmentID}", 
+                "${ids.ClinicID}", 
+                "${ids.DoctorID}", 
+                "${ids.PatientID}",
                 "${data.DoctorMainSpecialty}",
                 "${data.HospitalName}",
                 "${data.HospitalCity}",
@@ -623,7 +637,7 @@ const controller = {
                 EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME)
                 ;
                 `;
-                
+
                 // const query = `
                 // UPDATE Appointments.appointments
                 // SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
