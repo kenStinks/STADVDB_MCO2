@@ -150,17 +150,14 @@ async function updateData(data) {
 
     console.log(process.env.VM_INTERNAL_IP_0);
     axios.post(`${process.env.VM_INTERNAL_IP_0}/update_solo`, formData
-    ).then(res => console.log(res)
     ).catch(err => console.log('UPDATE: ', 'NODE MAIN OFFLINE ', err));
     
     console.log(process.env.VM_INTERNAL_IP_1);
     axios.post(`${process.env.VM_INTERNAL_IP_1}/update_solo`, formData
-    ).then(res => console.log(res)
     ).catch(err => console.log('UPDATE: ', 'NODE LUZON OFFLINE ', err));
 
     console.log(process.env.VM_INTERNAL_IP_2);
     axios.post(`${process.env.VM_INTERNAL_IP_2}/update_solo`, formData
-    ).then(res => console.log(res)
     ).catch(err => console.log('UPDATE: ', 'NODE VISMIN OFFLINE ', err));
 
     // axios({
