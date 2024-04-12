@@ -563,6 +563,7 @@ const controller = {
             logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
                 const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
+                //Read committed because IDs Shouldnt Change
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 await connection.query('START TRANSACTION');
     
@@ -667,17 +668,11 @@ const controller = {
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
             }
         } else {
-            console.log('Deleting Data due to server region constraints');
+            console.log(`Deleting Data ${data.AppointmentID} due to server region constraints`);
             try {
                 const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
             
-                var data = await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${id}"`);
-        
-                Object.keys(data).forEach(keys => {
-                    if (keys != 'transactionID' && keys != 'checkpointID') {
-                        logs.logTransaction(`${transactionID}|${keys}|${data[keys]}`);
-                    }
-                });
+                var data = await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${data.AppointmentID}"`);
 
                 connection.release();
             } catch (error) {
