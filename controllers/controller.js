@@ -699,7 +699,7 @@ const controller = {
                 CAST('${data.QueueDate}' as DATETIME),
                 CAST('1999-01-01 ${data.StartTime}' as DATETIME),
                 CAST('1999-01-01 ${data.EndTime}' as DATETIME),
-                20,
+                0,
                 ${isHospital},
                 ""
                 );
