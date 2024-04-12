@@ -106,7 +106,7 @@ const recovery = {
                             start_uuid = '';
                             data = {};
                         } else if (split[1] == 'CHECKPOINT') {
-                            console.log('RECOVERING TRANSACTION ID# ', split[0])
+                            console.log('RECOVERING CHECKPOINT ID# ', split[0])
                             start_uuid = '';
                             data = {};
                         } else {
@@ -174,7 +174,7 @@ const recovery = {
                             start_uuid = '';
                             data = {};
                         } else if (split[1] == 'CHECKPOINT') {
-                            console.log('RECOVERING TRANSACTION ID# ', split[0])
+                            console.log('RECOVERING CHECKPOINT ID# ', split[0])
                             start_uuid = '';
                             data = {};
                         } else {
@@ -213,7 +213,7 @@ const recovery = {
                         const split = lines[index].split('|')
                         if (split[1] == 'START') {
                             start_uuid = split[0];
-                            console.log('START TRANSACTION ID# ', start_uuid)
+                            console.log(`START TRANSACTION ${split[2]} ID# `, start_uuid)
                             data = {};
                         } else if (split[1] == 'COMMIT') {
                             if (start_uuid == split[0]) {
@@ -252,7 +252,7 @@ const recovery = {
                             start_uuid = '';
                             data = {};
                         } else if (split[1] == 'CHECKPOINT') {
-                            console.log('RECOVERING TRANSACTION ID# ', split[0])
+                            console.log('RECOVERING CHECKPOINT ID# ', split[0])
                             start_uuid = '';
                             data = {};
                         } else {
