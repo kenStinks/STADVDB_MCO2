@@ -617,7 +617,7 @@ const controller = {
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|DELETE`);
             try {
-                const connection = await pool.getConnection();
+                const connection = await mysql.createPool(poolHelper.pool_current).getConnection()
 
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
                 await connection.beginTransaction();
