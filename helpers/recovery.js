@@ -58,25 +58,6 @@ const recovery = {
                     var txt = body.toString();
                     const lines = txt.toString().split('\n');
     
-                    // fs.readFile(txt, (error, data) => {
-                    //     if (error) {
-                    //         throw error;
-                    //     }
-                    //     const lines = data.toString().split('\n');
-                    //     console.log(lines);
-    
-                    //     // for (let i = lines.length - 1; i >= 0; i--) {
-                    //     //     // Process each line here (or call a callback function)
-                    //     //     // For demonstration, we'll just print the line
-                    //     //     console.log(lines[i]);
-                
-                    //     //     // You can also pass each line to a callback function
-                    //     //     // callback(null, lines[i]);
-                
-                    //     //     // Alternatively, you can collect lines in an array and pass them to the callback function
-                    //     //     // reverseLines.push(lines[i]);
-                    //     // }
-                    // })
                     console.log(lines.length);
     
                     for (var index = lines.length - 1; index >= lines.length; index--) {
@@ -152,25 +133,6 @@ const recovery = {
                     var txt = body.toString();
                     const lines = txt.toString().split('\n');
     
-                    // fs.readFile(txt, (error, data) => {
-                    //     if (error) {
-                    //         throw error;
-                    //     }
-                    //     const lines = data.toString().split('\n');
-                    //     console.log(lines);
-    
-                    //     // for (let i = lines.length - 1; i >= 0; i--) {
-                    //     //     // Process each line here (or call a callback function)
-                    //     //     // For demonstration, we'll just print the line
-                    //     //     console.log(lines[i]);
-                
-                    //     //     // You can also pass each line to a callback function
-                    //     //     // callback(null, lines[i]);
-                
-                    //     //     // Alternatively, you can collect lines in an array and pass them to the callback function
-                    //     //     // reverseLines.push(lines[i]);
-                    //     // }
-                    // })
                     console.log(lines.length);
     
                     for (var index = lines.length - 1; index >= lines.length; index--) {
@@ -241,22 +203,6 @@ const recovery = {
             });
 
         } else {
-            // fs.readFile('./logs/logs.txt', (error, data) => {
-            //     if (error) {
-            //         console.log(error);
-            //         throw error;
-            //     }
-            //     const lines = data.toString().split('\n');
-            //     console.log(lines);
-                
-            //     for (var index = lines.length - 1; index >= lines.length; index--) {
-            //         const split = lines[index].split('|')
-            //         if (split[1] == 'CHECKPOINT') {
-            //             last_checkpoint = split[0];
-            //             return;
-            //         }
-            //     }
-            // });
             
             var start_uuid;
             var current_checkpoint;
@@ -267,25 +213,7 @@ const recovery = {
                     var txt = body.toString();
                     const lines = txt.toString().split('\n');
     
-                    // fs.readFile(txt, (error, data) => {
-                    //     if (error) {
-                    //         throw error;
-                    //     }
-                    //     const lines = data.toString().split('\n');
-                    //     console.log(lines);
-    
-                    //     // for (let i = lines.length - 1; i >= 0; i--) {
-                    //     //     // Process each line here (or call a callback function)
-                    //     //     // For demonstration, we'll just print the line
-                    //     //     console.log(lines[i]);
-                
-                    //     //     // You can also pass each line to a callback function
-                    //     //     // callback(null, lines[i]);
-                
-                    //     //     // Alternatively, you can collect lines in an array and pass them to the callback function
-                    //     //     // reverseLines.push(lines[i]);
-                    //     // }
-                    // })
+
                     console.log(lines.length);
     
                     for (var index = lines.length - 1; index >= lines.length; index--) {
