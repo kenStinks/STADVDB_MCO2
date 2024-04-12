@@ -725,7 +725,7 @@ const controller = {
                 console.log(error);
                 throw error;
             }
-            res.send(data)
+            res.send(data.toString())
         });
     }
 }

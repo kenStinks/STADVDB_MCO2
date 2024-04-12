@@ -55,8 +55,8 @@ const recovery = {
             // Make an HTTP GET request to retrieve the text file
             request.get(server_ip[0]+filePath, async function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var txt = body.toString();
-                    const lines = txt.toString().split('\n');
+                    const lines = body.split('\n');
+
     
                     console.log(lines.length);
     
@@ -130,8 +130,7 @@ const recovery = {
 
             request.get(server_ip[1]+filePath, async function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var txt = body.toString();
-                    const lines = txt.toString().split('\n');
+                    const lines = body.split('\n');
     
                     console.log(lines.length);
     
@@ -210,9 +209,7 @@ const recovery = {
             // Make an HTTP GET request to retrieve the text file
             request.get(server_ip+filePath, async function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var txt = body.toString();
-                    const lines = txt.toString().split('\n');
-    
+                    const lines = body.split('\n');
 
                     console.log(lines.length);
     
