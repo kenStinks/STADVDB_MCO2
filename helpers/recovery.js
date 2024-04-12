@@ -79,7 +79,6 @@ const recovery = {
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/insert_solo`, formData
-                                        ).then(res => console.log(res)
                                         ).catch(err => console.log(err));
                                         break;
                                     case "DELETE":
@@ -87,7 +86,6 @@ const recovery = {
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/delete_solo`, formData
-                                        ).then(res => console.log(res)
                                         ).catch(err => console.log(err));    
                                         break;
                                     case "UPDATE":
@@ -95,7 +93,6 @@ const recovery = {
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/update_solo`, formData
-                                        ).then(res => console.log(res)
                                         ).catch(err => console.log(err));
                                         break;
                                     default:
@@ -109,7 +106,7 @@ const recovery = {
                             start_uuid = '';
                             data = {};
                         } else if (split[1] == 'CHECKPOINT') {
-                            console.log('RECOVERING TRANSACTION ID# ', start_uuid)
+                            console.log('RECOVERING TRANSACTION ID# ', split[0])
                             start_uuid = '';
                             data = {};
                         } else {
@@ -150,7 +147,6 @@ const recovery = {
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/insert_solo`, formData
-                                        ).then(res => console.log(res)
                                         ).catch(err => console.log(err));
                                         break;
                                     case "DELETE":
@@ -158,7 +154,6 @@ const recovery = {
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/delete_solo`, formData
-                                        ).then(res => console.log(res)
                                         ).catch(err => console.log(err));    
                                         break;
                                     case "UPDATE":
@@ -166,7 +161,6 @@ const recovery = {
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/update_solo`, formData
-                                        ).then(res => console.log(res)
                                         ).catch(err => console.log(err));
                                         break;
                                     default:
@@ -180,7 +174,7 @@ const recovery = {
                             start_uuid = '';
                             data = {};
                         } else if (split[1] == 'CHECKPOINT') {
-                            console.log('RECOVERING TRANSACTION ID# ', start_uuid)
+                            console.log('RECOVERING TRANSACTION ID# ', split[0])
                             start_uuid = '';
                             data = {};
                         } else {
@@ -241,7 +235,7 @@ const recovery = {
                                         ).catch(err => console.log(err));    
                                         break;
                                     case "UPDATE":
-                                        console.log('RECOVERING DELETE ID# ', split[0])
+                                        console.log('RECOVERING UPDATE ID# ', split[0])
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/update_solo`, formData
@@ -258,7 +252,7 @@ const recovery = {
                             start_uuid = '';
                             data = {};
                         } else if (split[1] == 'CHECKPOINT') {
-                            console.log('RECOVERING TRANSACTION ID# ', start_uuid)
+                            console.log('RECOVERING TRANSACTION ID# ', split[0])
                             start_uuid = '';
                             data = {};
                         } else {
