@@ -47,6 +47,8 @@ const recovery = {
             }
         });
 
+        console.log("LAST CHECKPOINT: ", last_checkpoint);
+
         if (database_name == 'Main') {
             
             var start_uuid;
