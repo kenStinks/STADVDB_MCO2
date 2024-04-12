@@ -25,7 +25,7 @@ const recovery = {
         const file = fs.createWriteStream("data.txt");
 
         // Define the URL of the server and the path to the text file
-        const filePath = '/logs.txt';
+        const filePath = '/get_log';
 
         var last_checkpoint = '';
         var start_recover_index;
