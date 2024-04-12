@@ -565,7 +565,7 @@ const controller = {
             try {
                 const connection = mysql.createPool(poolHelper.pool_current);  
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
-                await connection.beginTransaction();
+                await connection.query('START TRANSACTION');
     
                 Object.keys(data).forEach(keys => {
                     if (keys != 'transactionID' && keys != 'checkpointID') {
@@ -594,7 +594,7 @@ const controller = {
     
                 logs.logTransaction(`${transactionID}|COMMIT|UPDATE`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
-                await connection.commit();
+                await connection.query('COMMIT TRANSACTION');
                 connection.release();
             } catch (err) {
                 console.log(err);
