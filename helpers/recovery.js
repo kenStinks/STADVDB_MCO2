@@ -15,7 +15,7 @@ const recovery = {
                 server_ip = [process.env.LOG_INTERNAL_IP_1, process.env.LOG_INTERNAL_IP_2];
                 break;
             case 'Luzon':
-            case 'Vismin':
+            case 'VisMin':
                 server_ip = process.env.LOG_INTERNAL_IP_0;
                 break;
             default:
