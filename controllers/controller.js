@@ -560,13 +560,11 @@ const controller = {
         var transactionID = req.body.transactionID;
         var checkpointID = req.body.checkpointID;
 
-        const pool = mysql.createPool(poolHelper.pool_current);
-
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             
             logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
-                const connection = pool.getConnection();  
+                var connection = mysql.createPool(poolHelper.pool_current).getConnection();  
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 await connection.beginTransaction();
     
