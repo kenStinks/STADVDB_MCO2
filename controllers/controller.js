@@ -576,6 +576,8 @@ const controller = {
 
         var data = req.body;
 
+        console.log(data);
+
         var transactionID = req.body.transactionID;
         var checkpointID = req.body.checkpointID;
 
@@ -652,7 +654,10 @@ const controller = {
                 TimeQueued = CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
                 QueueDate = CAST('${data.QueueDate}' as DATETIME),
                 StartTime = CAST('1999-01-01 ${data.StartTime}' as DATETIME),
-                EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME)
+                EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME),
+                PatientAge = 0,
+                IsHospital = ${isHospital},
+                HospitalProvince = ""
                 ;
                 `;
 
