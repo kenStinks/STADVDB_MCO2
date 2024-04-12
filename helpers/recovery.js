@@ -38,7 +38,7 @@ const recovery = {
             const lines = data.toString().split('\n');
             console.log(lines);
             
-            for (var index = lines.length - 1; index >= lines.length; index--) {
+            for (var index = lines.length - 1; index >= 0; index--) {
                 const split = lines[index].split('|')
                 if (split[1] == 'CHECKPOINT') {
                     last_checkpoint = split[0];
