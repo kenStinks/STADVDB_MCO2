@@ -551,7 +551,9 @@ const controller = {
 
     soloUpdateID: async function (req, res) {
         res.end();
-        
+
+        console.log('Solo Update Begin');
+
         var data = req.body;
 
         var transactionID = req.body.transactionID;
