@@ -292,6 +292,7 @@ const recovery = {
                                 
                                 switch (split[2]) {
                                     case "INSERT":
+                                        console.log('RECOVERING INSERT ID# ', split[0])
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/insert_solo`, formData
@@ -299,6 +300,7 @@ const recovery = {
                                         ).catch(err => console.log(err));
                                         break;
                                     case "DELETE":
+                                        console.log('RECOVERING DELETE ID# ', split[0])
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/delete_solo`, formData
@@ -306,6 +308,7 @@ const recovery = {
                                         ).catch(err => console.log(err));    
                                         break;
                                     case "UPDATE":
+                                        console.log('RECOVERING DELETE ID# ', split[0])
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/update_solo`, formData

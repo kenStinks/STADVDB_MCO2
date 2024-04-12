@@ -610,15 +610,14 @@ const controller = {
         var transactionID = req.body.transactionID;
         var checkpointID = req.body.checkpointID;
 
-        const pool = mysql.createPool(poolHelper.pool_current);
 
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|DELETE`);
             try {
-                const connection = await pool.getConnection()
+                const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
 
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
-                await connection.beginTransaction();
+                await connection.query('START TRANSACTION');
             
                 var data = await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${id}"`);
         
@@ -630,13 +629,12 @@ const controller = {
         
                 logs.logTransaction(`${transactionID}|COMMIT|DELETE`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
-                await connection.commit();
-                connection.releaseConnection();
+                await connection.query('COMMIT');
+                connection.release();
             } catch (error) {
+                console.log(err);
                 logs.logTransaction(`${transactionID}|ABORT|DELETE`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
-                await connection.rollback()
-                pool.pool_current.releaseConnection();
             }
         }
         
@@ -651,9 +649,10 @@ const controller = {
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|INSERT`);
             try {
-                var connection = await poolHelper.pool_current.getConnection();
+                const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
+
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITED');
-                await connection.beginTransaction();
+                await connection.query('START TRANSACTION');
     
                 Object.keys(data).forEach(keys => {
                     if (keys != 'transactionID' && keys != 'checkpointID') {
@@ -708,14 +707,12 @@ const controller = {
                 await connection.query(query);
                 logs.logTransaction(`${transactionID}|COMMIT|INSERT`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
-                await connection.commit();
-                poolHelper.pool_current.releaseConnection();
+                await connection.query('COMMIT');
+                connection.release();
             } catch (error) {
-                console.log("ERR: ", error);
+                console.log(err);
                 logs.logTransaction(`${transactionID}|ABORT|INSERT`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
-                await connection.rollback()
-                poolHelper.pool_current.releaseConnection();
             }    
         }
     },
