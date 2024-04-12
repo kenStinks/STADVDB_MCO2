@@ -760,7 +760,7 @@ const controller = {
 
                 const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
 
-                await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITED');
+                await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED');
                 await connection.query('START TRANSACTION');
     
                 Object.keys(data).forEach(keys => {
