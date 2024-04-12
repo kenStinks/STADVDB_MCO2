@@ -4,6 +4,7 @@ const poolHelper = require('../helpers/pool.js')
 const axios = require('axios');
 const https = require('https');
 const mysql = require('mysql2/promise');
+const fs = require('fs');
 const { connect } = require('http2');
 
 var httpsAgent = new https.Agent({rejectUnauthorized: false});
