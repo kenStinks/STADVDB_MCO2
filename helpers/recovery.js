@@ -246,7 +246,7 @@ const recovery = {
             var current_checkpoint;
             var data = {};
             // Make an HTTP GET request to retrieve the text file
-            request.get(server_ip[0]+filePath, async function (error, response, body) {
+            request.get(server_ip+filePath, async function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     var txt = body.toString();
                     const lines = txt.toString().split('\n');
