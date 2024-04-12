@@ -114,6 +114,9 @@ const recovery = {
                         }   
                     }
                     console.log('END RECOVERY LUZON', last_checkpoint);
+                } else {
+                    console.log('LUZON SERVER SEEMS TO BE OFFLINE');
+                    console.log('RECOVERY FAILED');
                 }
             });
             request.get(server_ip[1]+filePath, async function (error, response, body) {
@@ -182,6 +185,9 @@ const recovery = {
                         }   
                     }
                     console.log('END RECOVERY VISMIN', last_checkpoint);
+                } else {
+                    console.log('VISMIN SERVER SEEMS TO BE OFFLINE');
+                    console.log('RECOVERY FAILED');
                 }
             });
 
@@ -261,6 +267,9 @@ const recovery = {
                         }
                     }
                     console.log('END RECOVERY', last_checkpoint);
+                } else {
+                    console.log('MAIN SERVER SEEMS TO BE OFFLINE');
+                    console.log('RECOVERY FAILED');
                 }
             });
         }
