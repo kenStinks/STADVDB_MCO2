@@ -351,7 +351,9 @@ async function addData(data) {
 async function getMax(query){
 
     try {
-    const [rows] = await poolHelper.pool_main.query(
+        const connection = await mysql.createPool(poolHelper.pool_main).getConnection()
+
+        const [rows] = await connection.query(
         `
         SELECT COUNT(*) as count
         FROM Appointments.appointments
@@ -367,7 +369,10 @@ async function getMax(query){
         
     }
     try {
-        const [rows0] = await poolHelper.pool_luzon.query(
+        const connection_1 = await mysql.createPool(poolHelper.pool_luzon).getConnection()
+        const connection_2 = await mysql.createPool(poolHelper.pool_vismin).getConnection()
+
+        const [rows0] = await connection_1.query(
             `
             SELECT COUNT(*) as count
             FROM Appointments.appointments
@@ -379,7 +384,7 @@ async function getMax(query){
             HospitalRegionName LIKE ${query.HospitalRegionName} 
             `  
         )
-        const [rows1] = await poolHelper.pool_luzon.query(
+        const [rows1] = await connection_2.query(
             `
             SELECT COUNT(*) as count
             FROM Appointments.appointments
@@ -391,6 +396,8 @@ async function getMax(query){
             HospitalRegionName LIKE ${query.HospitalRegionName} 
             `  
         )
+        connection_1.release();
+        connection_2.release();
         return rows0.concat(rows1);
     } catch (error) {
         return [];
@@ -553,8 +560,8 @@ const controller = {
         var checkpointID = req.body.checkpointID;
 
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
+            
             logs.logTransaction(`${transactionID}|START|UPDATE`);
-
             mysql.createPool(poolHelper.pool_current).getConnection(async function (err, connection) {  
                 try {
                     await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
