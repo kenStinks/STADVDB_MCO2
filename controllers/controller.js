@@ -35,7 +35,7 @@ const visMinRegions = [
 async function getData(query, limit) {
     
     try {
-        const connection = await pool.createPool(poolHelper.pool_main).getConnection()
+        const connection = await mysql.createPool(poolHelper.pool_main).getConnection()
 
         await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
         await connection.query('START TRANSACTION');
@@ -62,8 +62,8 @@ async function getData(query, limit) {
     }
 
     try {
-        const connection_1 = await pool.createPool(poolHelper.pool_luzon).getConnection()
-        const connection_2 = await pool.createPool(poolHelper.pool_vismin).getConnection()
+        const connection_1 = await mysql.createPool(poolHelper.pool_luzon).getConnection()
+        const connection_2 = await mysql.createPool(poolHelper.pool_vismin).getConnection()
         await connection_1.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
         await connection_2.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
         
@@ -554,8 +554,8 @@ const controller = {
 
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|UPDATE`);
-            
-            poolHelper.pool_current.getConnection(async function (err, connection) {  
+
+            mysql.createPool(poolHelper.pool_current).getConnection(async function (err, connection) {  
                 try {
                     await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
                     await connection.beginTransaction();
