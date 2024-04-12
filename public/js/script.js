@@ -223,14 +223,15 @@ function timeToGeneral(date){
     var minutes = Number(date.match(/:(\d+)/)[1]);
     var AMPM = date.match(/\s(.*)$/)[1];
     console.log(hours + ":" + minutes + " "+ AMPM)
-    if (AMPM == "PM") {
+    if (AMPM == "PM" && hours < 12) {
         hours = hours + 12;
     }
+    console.log(hours + ":" + minutes)
     var sHours = hours.toString();
     var sMinutes = minutes.toString();
     if(hours<10) sHours = "0" + sHours;
     if(minutes<10) sMinutes = "0" + sMinutes;
-    return sHours + ":" + sMinutes + ":00";
+    return sHours + ":" + sMinutes;
 }
 
 function timeToAMPM(date) {
