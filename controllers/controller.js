@@ -818,7 +818,7 @@ const controller = {
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 await connection.query('COMMIT');
                 connection.release();
-            } catch (error) {
+            } catch (err) {
                 console.log(err);
                 logs.logTransaction(`${transactionID}|ABORT|INSERT`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
