@@ -36,7 +36,7 @@ const recovery = {
             const split = lines[index].split('|')
             if (split[1] == 'CHECKPOINT') {
                 last_checkpoint = split[0];
-                return;
+                break;
             }
         }
 
