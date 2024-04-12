@@ -69,7 +69,7 @@ const recovery = {
                         }                
                     }
     
-                    console.log('START RECOVERY', start_uuid);
+                    console.log('START RECOVERY LUZON', last_checkpoint);
 
                     for (let index = start_recover_index; index < lines.length; index++) {
                         const split = lines[index].split('|')
@@ -126,8 +126,6 @@ const recovery = {
                     }
                 }
             });
-
-
             request.get(server_ip[1]+filePath, async function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     const lines = body.split('\n');
@@ -143,7 +141,7 @@ const recovery = {
                         }                
                     }
     
-                    console.log('START RECOVERY', start_uuid);
+                    console.log('START RECOVERY VISMIN', last_checkpoint);
 
                     for (let index = start_recover_index; index < lines.length; index++) {
                         const split = lines[index].split('|')
@@ -211,18 +209,18 @@ const recovery = {
                 if (!error && response.statusCode == 200) {
                     const lines = body.split('\n');
 
-                    console.log(lines.length);
+                    console.log("LINES OF RECOVERY: ", lines.length);
     
                     for (var index = lines.length - 1; index >= lines.length; index--) {
                         const split = lines[index].split('|')
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
                             start_recover_index = lines.length - index + 1;
-                            console.log("lines: " + start_recover_index);
+                            console.log("START RECOVER INDEX: " + start_recover_index);
                             return;
-                        }                
+                        }  
                     }
     
-                    console.log('START RECOVERY', start_uuid);
+                    console.log('START RECOVERY', last_checkpoint);
 
                     for (let index = start_recover_index; index < lines.length; index++) {
                         const split = lines[index].split('|')
