@@ -303,9 +303,9 @@ async function addData(data) {
     formData.AppointmentID = AppointmentID.replace(/-/g,"");
     console.log(formData.AppointmentID);
     var ClinicID = logs.generateUUID();
-    formData.ClinicID = ClinicID.replaceAll('-', '');
+    formData.ClinicID = ClinicID.replace(/-/g,"");
     var DoctorID = logs.generateUUID();
-    formData.DoctorID = DoctorID.replaceAll('-', '');
+    formData.DoctorID = DoctorID.replace(/-/g,"");
 
     console.log(process.env.VM_INTERNAL_IP_0);
     axios.post(`${process.env.VM_INTERNAL_IP_0}/add_solo`, formData
