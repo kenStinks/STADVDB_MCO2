@@ -154,7 +154,7 @@ async function updateData(data) {
             `
             SELECT * 
             FROM Appointments.appointments
-            WHERE AppointmentID = "${data.AppointmentID}"
+            WHERE AppointmentID = "${data.id}"
             `
         );
 
@@ -624,7 +624,7 @@ const controller = {
                     IsHospital, 
                     HospitalProvince
                 ) VALUES 
-                ("${data.AppointmentID}", 
+                ("${data.id}", 
                 "${data.ClinicID}", 
                 "${data.DoctorID}", 
                 "${data.PatientID}",
@@ -690,11 +690,11 @@ const controller = {
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
             }
         } else {
-            console.log(`Deleting Data ${data.AppointmentID} due to server region constraints`);
+            console.log(`Deleting Data ${data.id} due to server region constraints`);
             try {
                 const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
             
-                var data = await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${data.AppointmentID}"`);
+                await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${data.id}"`);
 
                 connection.release();
             } catch (error) {
