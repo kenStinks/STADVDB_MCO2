@@ -693,8 +693,12 @@ const controller = {
             console.log(`Deleting Data ${data.id} due to server region constraints`);
             try {
                 const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
-            
-                await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${data.id}"`);
+                
+                if (await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${data.id}"`) >= 1) {
+                    console.log(`Deletion of Data ${data.id} SUCCESS`);
+                } else {
+                    console.log(`Deletion of Data ${data.id} FAIL it does not exists`);
+                }
 
                 connection.release();
             } catch (error) {
