@@ -36,7 +36,7 @@ const visMinRegions = [
 async function getData(query, limit) {
     
     try {
-        const connection = await mysql.createPool(poolHelper.pool_main).getConnection()
+        const connection = await mysql.createPool(poolHelper.pool_main).getConnection();
 
         await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
         await connection.query('START TRANSACTION');
@@ -435,7 +435,6 @@ async function selectNode(region) {
 
 
 const controller = {
-
     getIndex: async function (req, res) {
         console.log(req.query)
 
@@ -551,8 +550,8 @@ const controller = {
     },
 
     soloUpdateID: async function (req, res) {
+        const mysql = require('mysql2/promise');
         res.end();
-
         console.log('Solo Update Begin');
 
         var data = req.body;
@@ -564,7 +563,7 @@ const controller = {
             
             logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
-                var connection = mysql.createPool(poolHelper.pool_current).getConnection();  
+                const connection = mysql.createPool(poolHelper.pool_current);  
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 await connection.beginTransaction();
     
