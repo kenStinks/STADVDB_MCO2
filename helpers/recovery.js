@@ -55,12 +55,13 @@ const recovery = {
                     for (var index = lines.length - 1; index >= 0; index--) {
                         const split = lines[index].split('|')
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
-                            start_recover_index = lines.length - index + 1;
-                            console.log("lines: " + start_recover_index);
+                            start_recover_index = index;
                             break;
                         }                
                     }
     
+                    console.log("START RECOVERY INDEX: " + start_recover_index);
+
                     console.log('START RECOVERY LUZON', last_checkpoint);
 
                     for (let index = start_recover_index; index < lines.length; index++) {
@@ -126,12 +127,13 @@ const recovery = {
                     for (var index = lines.length - 1; index >= 0; index--) {
                         const split = lines[index].split('|')
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
-                            start_recover_index = lines.length - index + 1;
-                            console.log("lines: " + start_recover_index);
+                            start_recover_index = index;
                             break;
                         }                
                     }
     
+                    console.log("START RECOVERY INDEX: " + start_recover_index);
+
                     console.log('START RECOVERY VISMIN', last_checkpoint);
 
                     for (let index = start_recover_index; index < lines.length; index++) {
@@ -206,12 +208,12 @@ const recovery = {
                     for (var index = lines.length - 1; index >= 0; index--) {
                         const split = lines[index].split('|')
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
-                            start_recover_index = lines.length - index + 1;
+                            start_recover_index =  index;
                             break;
                         }  
                     }
                     
-                    console.log("START RECOVER INDEX: " + start_recover_index);
+                    console.log("START RECOVERY INDEX: " + start_recover_index);
                     
                     console.log('START RECOVERY', last_checkpoint);
 
