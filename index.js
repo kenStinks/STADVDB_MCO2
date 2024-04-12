@@ -17,7 +17,6 @@ app.use(session({
     secret: 'sessionID'
 }));
 
-recovery.perform_recovery();
 
 app.set('view engine', 'hbs');
 hbs.registerPartials(`${__dirname}/views/partials`);
@@ -36,3 +35,5 @@ app.use(express.static('logs'));
 app.listen(process.env.SERVER_PORT, function () {
     console.log(`app listening at ${process.env.SERVER_HOST}:` + process.env.SERVER_PORT);
 });
+
+recovery.perform_recovery();
