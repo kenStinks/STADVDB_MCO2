@@ -563,7 +563,7 @@ const controller = {
             
             logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
-                const connection = mysql.createPool(poolHelper.pool_current);  
+                const connection = mysql.createPool(poolHelper.pool_current).getConnection();  
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 await connection.query('START TRANSACTION');
     
