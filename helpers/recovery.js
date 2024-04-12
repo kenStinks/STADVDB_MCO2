@@ -30,19 +30,15 @@ const recovery = {
         
         const file = fs.readFileSync('./logs/logs.txt', (err, data) => {
             if (err) {
-                fs.open('./logs/logs.txt', (error, data) => {
-                    if (error) {
-                        fs.writeFile('./logs/logs.txt', '', (error, data) => {
-                            if (error) {
-                            }
-                            console.log('created log file');
-                        })
-                    } else {
-                        console.log('log file exists');
+                fs.writeFile('./logs/logs.txt', '', (err, data) => {
+                    if (err) {
                     }
-                });
-                throw err;
+                    console.log('created log file');
+                })
+            } else {
+                console.log('log file exists');
             }
+            throw err;
         });
         const lines = file.toString().split('\n');
         console.log(lines);
