@@ -65,7 +65,7 @@ const recovery = {
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
                             start_recover_index = lines.length - index + 1;
                             console.log("lines: " + start_recover_index);
-                            return;
+                            break;
                         }                
                     }
     
@@ -137,7 +137,7 @@ const recovery = {
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
                             start_recover_index = lines.length - index + 1;
                             console.log("lines: " + start_recover_index);
-                            return;
+                            break;
                         }                
                     }
     
@@ -216,7 +216,7 @@ const recovery = {
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
                             start_recover_index = lines.length - index + 1;
                             console.log("START RECOVER INDEX: " + start_recover_index);
-                            return;
+                            break;
                         }  
                     }
     
