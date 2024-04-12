@@ -51,9 +51,6 @@ const recovery = {
             request.get(server_ip[0]+filePath, async function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     const lines = body.split('\n');
-
-    
-                    console.log(lines.length);
     
                     for (var index = lines.length - 1; index >= 0; index--) {
                         const split = lines[index].split('|')
@@ -69,8 +66,8 @@ const recovery = {
                     for (let index = start_recover_index; index < lines.length; index++) {
                         const split = lines[index].split('|')
                         if (split[1] == 'START') {
-                            console.log('START TRANSACTION ID# ', start_uuid)
                             start_uuid = split[0];
+                            console.log('START TRANSACTION ID# ', start_uuid)
                             data = {};
                         } else if (split[1] == 'COMMIT') {
                             if (start_uuid == split[0]) {
@@ -119,14 +116,13 @@ const recovery = {
                             data[split[1]] = data.split[2];
                         }   
                     }
+                    console.log('END RECOVERY LUZON', last_checkpoint);
                 }
             });
             request.get(server_ip[1]+filePath, async function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     const lines = body.split('\n');
-    
-                    console.log(lines.length);
-    
+
                     for (var index = lines.length - 1; index >= 0; index--) {
                         const split = lines[index].split('|')
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
@@ -141,8 +137,8 @@ const recovery = {
                     for (let index = start_recover_index; index < lines.length; index++) {
                         const split = lines[index].split('|')
                         if (split[1] == 'START') {
-                            console.log('START TRANSACTION ID# ', start_uuid)
                             start_uuid = split[0];
+                            console.log('START TRANSACTION ID# ', start_uuid)
                             data = {};
                         } else if (split[1] == 'COMMIT') {
                             if (start_uuid == split[0]) {
@@ -191,6 +187,7 @@ const recovery = {
                             data[split[1]] = data.split[2];
                         }   
                     }
+                    console.log('END RECOVERY VISMIN', last_checkpoint);
                 }
             });
 
@@ -221,8 +218,8 @@ const recovery = {
                     for (let index = start_recover_index; index < lines.length; index++) {
                         const split = lines[index].split('|')
                         if (split[1] == 'START') {
-                            console.log('START TRANSACTION ID# ', start_uuid)
                             start_uuid = split[0];
+                            console.log('START TRANSACTION ID# ', start_uuid)
                             data = {};
                         } else if (split[1] == 'COMMIT') {
                             if (start_uuid == split[0]) {
@@ -234,7 +231,6 @@ const recovery = {
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/insert_solo`, formData
-                                        ).then(res => console.log(res)
                                         ).catch(err => console.log(err));
                                         break;
                                     case "DELETE":
@@ -242,7 +238,6 @@ const recovery = {
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/delete_solo`, formData
-                                        ).then(res => console.log(res)
                                         ).catch(err => console.log(err));    
                                         break;
                                     case "UPDATE":
@@ -250,7 +245,6 @@ const recovery = {
                                         data.transactionID = split[0];
                                         data.checkpointID = checkpoint[0];
                                         await axios.post(`${process.env.VM_INTERNAL_IP_CURRENT}/update_solo`, formData
-                                        ).then(res => console.log(res)
                                         ).catch(err => console.log(err));
                                         break;
                                     default:
@@ -271,6 +265,7 @@ const recovery = {
                             data[split[1]] = data.split[2];
                         }   
                     }
+                    console.log('END RECOVERY', last_checkpoint);
                 }
             });
         }
