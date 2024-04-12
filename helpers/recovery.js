@@ -55,7 +55,7 @@ const recovery = {
     
                     console.log(lines.length);
     
-                    for (var index = lines.length - 1; index >= lines.length; index--) {
+                    for (var index = lines.length - 1; index >= 0; index--) {
                         const split = lines[index].split('|')
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
                             start_recover_index = lines.length - index + 1;
@@ -127,7 +127,7 @@ const recovery = {
     
                     console.log(lines.length);
     
-                    for (var index = lines.length - 1; index >= lines.length; index--) {
+                    for (var index = lines.length - 1; index >= 0; index--) {
                         const split = lines[index].split('|')
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
                             start_recover_index = lines.length - index + 1;
@@ -206,7 +206,7 @@ const recovery = {
 
                     console.log("LINES OF RECOVERY: ", lines.length);
     
-                    for (var index = lines.length - 1; index >= lines.length; index--) {
+                    for (var index = lines.length - 1; index >= 0; index--) {
                         const split = lines[index].split('|')
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
                             start_recover_index = lines.length - index + 1;
