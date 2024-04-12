@@ -545,9 +545,7 @@ const controller = {
             data.IsVirtualInt = 1;
         } else {data.IsVirtualInt = 0;}
 
-        await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         addData(data)
-        console.log(data)
     },
 
     soloUpdateID: async function (req, res) {
@@ -563,6 +561,7 @@ const controller = {
             logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
                 const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
+                const connection_main = await mysql.createPool(poolHelper.pool_current).getConnection();
                 //Read committed because IDs Shouldnt Change
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 await connection.query('START TRANSACTION');
@@ -575,7 +574,7 @@ const controller = {
 
                 var isHospital = data.HospitalName ? 0 : 1;
 
-                const ids = await connection.query(
+                const ids = await connection_main.query(
                     `
                     SELECT * 
                     FROM Appointments.appointments
