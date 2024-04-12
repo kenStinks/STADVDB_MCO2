@@ -550,7 +550,8 @@ const controller = {
     },
 
     soloUpdateID: async function (req, res) {
-
+        res.end();
+        
         var data = req.body;
 
         var transactionID = req.body.transactionID;
