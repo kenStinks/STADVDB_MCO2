@@ -45,7 +45,6 @@ const recovery = {
         if (database_name == 'Main') {
             
             var start_uuid;
-            var current_checkpoint;
             var data = {};
             // Make an HTTP GET request to retrieve the text file
             request.get(server_ip[0]+filePath, async function (error, response, body) {
@@ -196,7 +195,6 @@ const recovery = {
         } else {
             
             var start_uuid;
-            var current_checkpoint;
             var data = {};
             // Make an HTTP GET request to retrieve the text file
             request.get(server_ip+filePath, async function (error, response, body) {

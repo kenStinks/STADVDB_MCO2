@@ -2,12 +2,9 @@ const dotenv = require('dotenv')
 const logs = require('../helpers/logs.js')
 const poolHelper = require('../helpers/pool.js')
 const axios = require('axios');
-const https = require('https');
 const mysql = require('mysql2/promise');
 const fs = require('fs');
-const { connect } = require('http2');
 
-var httpsAgent = new https.Agent({rejectUnauthorized: false});
 
 dotenv.config();
 
@@ -382,7 +379,8 @@ async function getMax(query){
         HospitalName LIKE ${query.HospitalName} AND
         HospitalCity LIKE ${query.HospitalCity} AND
         HospitalRegionName LIKE ${query.HospitalRegionName} 
-        `  )
+        `  
+        )
         return rows;
     } catch (error) {
         
@@ -584,8 +582,10 @@ const controller = {
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
+                console.log('Solo Update Transaction');
                 const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
-                const connection_main = await mysql.createPool(poolHelper.pool_current).getConnection();
+
+
                 //Read committed because IDs Shouldnt Change
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 await connection.query('START TRANSACTION');
@@ -699,7 +699,7 @@ const controller = {
     },
 
     soloDeleteID: async function (req, res) {
-
+        console.log('Solo Delete Begin');
         var id = req.body.id;
 
         var transactionID = req.body.transactionID;
@@ -709,6 +709,8 @@ const controller = {
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|DELETE`);
             try {
+                console.log('Solo Delete Transaction');
+
                 const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
 
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
@@ -735,6 +737,7 @@ const controller = {
         
     },
     soloAddID: async function (req, res) {
+        console.log('Solo Add Begin');
 
         var data = req.body;
 
@@ -744,6 +747,8 @@ const controller = {
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|INSERT`);
             try {
+                console.log('Solo Add Transaction');
+
                 const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
 
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITED');
