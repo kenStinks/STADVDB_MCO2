@@ -33,7 +33,7 @@ const poolObject = {
         user:  process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,
-        port:  process.env.MYSQL_CURRENT_PORT,
+        port:  process.env.MYSQL_VISMIN_PORT,
         connectionLimit: 100
     }
 }
