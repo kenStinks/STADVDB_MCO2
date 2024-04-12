@@ -109,16 +109,16 @@ async function deleteData(id) {
     var checkpointID = logs.generateUUID();
     formData.checkpointID = checkpointID;
 
+    console.log(process.env.VM_INTERNAL_IP_0);
     await axios.post(`${process.env.VM_INTERNAL_IP_0}/delete_solo`, formData
-    ).then(res => console.log(res)
     ).catch(err => console.log('DELETE: ', 'NODE MAIN OFFLINE'));
 
+    console.log(process.env.VM_INTERNAL_IP_1);
     await axios.post(`${process.env.VM_INTERNAL_IP_1}/delete_solo`, formData
-    ).then(res => console.log(res)
     ).catch(err => console.log('DELETE: ', 'NODE LUZON OFFLINE'));
 
+    console.log(process.env.VM_INTERNAL_IP_2);
     await axios.post(`${process.env.VM_INTERNAL_IP_2}/delete_solo`, formData
-    ).then(res => console.log(res)
     ).catch(err => console.log('DELETE: ', 'NODE VISMIN OFFLINE'));
 
     // var connection = await selectRegion(region).getConnection();
@@ -288,16 +288,16 @@ async function addData(data) {
     var DoctorID = logs.generateUUID();
     formData.DoctorID = DoctorID.replaceAll('-', '');
 
-    await axios.post(`${process.env.VM_INTERNAL_IP_0}/add_solo`, formData
-    ).then(res => console.log(res)
+    console.log(process.env.VM_INTERNAL_IP_0);
+    axios.post(`${process.env.VM_INTERNAL_IP_0}/add_solo`, formData
     ).catch(err => console.log('ADD: ', 'NODE MAIN OFFLINE'));
 
-    await axios.post(`${process.env.VM_INTERNAL_IP_1}/add_solo`, formData
-    ).then(res => console.log(res)
+    console.log(process.env.VM_INTERNAL_IP_1);
+    axios.post(`${process.env.VM_INTERNAL_IP_1}/add_solo`, formData
     ).catch(err => console.log('ADD: ', 'NODE LUZON OFFLINE'));
 
-    await axios.post(`${process.env.VM_INTERNAL_IP_2}/add_solo`, formData
-    ).then(res => console.log(res)
+    console.log(process.env.VM_INTERNAL_IP_2);
+    axios.post(`${process.env.VM_INTERNAL_IP_2}/add_solo`, formData
     ).catch(err => console.log('ADD: ', 'NODE VISMIN OFFLINE'));
 
     // var connection = await pool.pool_main.getConnection();
@@ -724,16 +724,7 @@ const controller = {
                 console.log(error);
                 throw error;
             }
-            // const lines = data.toString().split('\n');
-            // console.log(lines);
-            
-            // for (var index = lines.length - 1; index >= lines.length; index--) {
-            //     const split = lines[index].split('|')
-            //     if (split[1] == 'CHECKPOINT') {
-            //         last_checkpoint = split[0];
-            //         return;
-            //     }
-            // }
+            res.send(data)
         });
     }
 }
