@@ -725,6 +725,7 @@ const controller = {
                 console.log(error);
                 throw error;
             }
+            res.setHeader('content-type', 'text/plain');
             res.send(data.toString())
         });
     }
