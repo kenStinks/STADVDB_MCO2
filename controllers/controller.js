@@ -4,6 +4,7 @@ const poolHelper = require('../helpers/pool.js')
 const axios = require('axios');
 const https = require('https');
 const mysql = require('mysql2/promise');
+const { connect } = require('http2');
 
 var httpsAgent = new https.Agent({rejectUnauthorized: false});
 
@@ -562,47 +563,45 @@ const controller = {
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             
             logs.logTransaction(`${transactionID}|START|UPDATE`);
-            mysql.createPool(poolHelper.pool_current).getConnection(async function (err, connection) {  
-                try {
-                    await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
-                    await connection.beginTransaction();
-        
-                    Object.keys(data).forEach(keys => {
-                        if (keys != 'transactionID' && keys != 'checkpointID') {
-                            logs.logTransaction(`${transactionID}|${keys}|${data[keys]}`);
-                        }
-                    });
-        
-                    const query = `
-                    UPDATE Appointments.appointments
-                    SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
-                    HospitalName = "${data.HospitalName}",
-                    HospitalCity = "${data.HospitalCity}",
-                    HospitalRegionName = "${data.HospitalRegionName}",
-                    Status = "${data.Status}",
-                    Type = "${data.Type}",
-                    IsVirtual = ${data.IsVirtualInt},
-                
-                    TimeQueued = CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
-                    QueueDate = CAST('${data.QueueDate}' as DATETIME),
-                    StartTime = CAST('1999-01-01 ${data.StartTime}' as DATETIME),
-                    EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME)
-                
-                    WHERE AppointmentID = "${data.id}"
-                    `;
-                    await connection.query(query);
-        
-                    logs.logTransaction(`${transactionID}|COMMIT|UPDATE`);
-                    logs.logTransaction(`${checkpointID}|CHECKPOINT`);
-                    await connection.commit();
-                    connection.releaseConnection();
-                } catch (err) {
-                    console.log(err);
-                    logs.logTransaction(`${transactionID}|ABORT|UPDATE`);
-                    logs.logTransaction(`${checkpointID}|CHECKPOINT`);
-                }
+            try {
+                connection = mysql.createPool(poolHelper.pool_current).getConnection();  
+                await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
+                await connection.beginTransaction();
     
-            });
+                Object.keys(data).forEach(keys => {
+                    if (keys != 'transactionID' && keys != 'checkpointID') {
+                        logs.logTransaction(`${transactionID}|${keys}|${data[keys]}`);
+                    }
+                });
+    
+                const query = `
+                UPDATE Appointments.appointments
+                SET DoctorMainSpecialty = "${data.DoctorMainSpecialty}",
+                HospitalName = "${data.HospitalName}",
+                HospitalCity = "${data.HospitalCity}",
+                HospitalRegionName = "${data.HospitalRegionName}",
+                Status = "${data.Status}",
+                Type = "${data.Type}",
+                IsVirtual = ${data.IsVirtualInt},
+            
+                TimeQueued = CAST('1999-01-01 ${data.TimeQueued}' as DATETIME),
+                QueueDate = CAST('${data.QueueDate}' as DATETIME),
+                StartTime = CAST('1999-01-01 ${data.StartTime}' as DATETIME),
+                EndTime = CAST('1999-01-01 ${data.EndTime}' as DATETIME)
+            
+                WHERE AppointmentID = "${data.id}"
+                `;
+                await connection.query(query);
+    
+                logs.logTransaction(`${transactionID}|COMMIT|UPDATE`);
+                logs.logTransaction(`${checkpointID}|CHECKPOINT`);
+                await connection.commit();
+                connection.releaseConnection();
+            } catch (err) {
+                console.log(err);
+                logs.logTransaction(`${transactionID}|ABORT|UPDATE`);
+                logs.logTransaction(`${checkpointID}|CHECKPOINT`);
+            }
         }
     },
 
