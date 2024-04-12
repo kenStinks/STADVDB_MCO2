@@ -600,8 +600,6 @@ const controller = {
 
                 var isHospital = data.HospitalName ? 0 : 1;
 
-
-
                 var query = 
                 `
                 INSERT INTO Appointments.appointments 
@@ -694,7 +692,7 @@ const controller = {
             try {
                 const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
                 
-                if (await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${data.id}"`) >= 1) {
+                if ((await connection.query(`SELECT * FROM ${process.env.MYSQL_DB_TABLE} WHERE AppointmentID = "${data.id}"`)).length >= 1) {
                     console.log(`Deletion of Data ${data.id} SUCCESS`);
                 } else {
                     console.log(`Deletion of Data ${data.id} FAIL it does not exists`);
