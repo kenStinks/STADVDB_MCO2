@@ -22,30 +22,23 @@ const recovery = {
                 break;
         }
         
-        const file = fs.createWriteStream("data.txt");
-
         // Define the URL of the server and the path to the text file
         const filePath = '/get_log';
 
         var last_checkpoint = '';
         var start_recover_index = "No Start Index";
         
-        fs.readFile('./logs/logs.txt', (error, data) => {
-            if (error) {
-                console.log(error);
-                throw error;
+        const file = fs.readFileSync('./logs/logs.txt');
+        const lines = file.toString().split('\n');
+        console.log(lines);
+        
+        for (var index = lines.length - 1; index >= 0; index--) {
+            const split = lines[index].split('|')
+            if (split[1] == 'CHECKPOINT') {
+                last_checkpoint = split[0];
+                return;
             }
-            const lines = data.toString().split('\n');
-            console.log(lines);
-            
-            for (var index = lines.length - 1; index >= 0; index--) {
-                const split = lines[index].split('|')
-                if (split[1] == 'CHECKPOINT') {
-                    last_checkpoint = split[0];
-                    return;
-                }
-            }
-        });
+        }
 
         console.log("LAST CHECKPOINT: ", last_checkpoint);
 
