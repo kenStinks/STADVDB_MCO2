@@ -224,7 +224,7 @@ function timeToGeneral(date){
     var AMPM = date.match(/\s(.*)$/)[1];
     console.log(hours + ":" + minutes + " "+ AMPM)
     if (AMPM == "PM" && hours < 12) {
-        hours = hours + 12;
+        hours += 12;
     }
     console.log(hours + ":" + minutes)
     var sHours = hours.toString();
