@@ -1,8 +1,9 @@
 const dotenv = require('dotenv')
 const logs = require('../helpers/logs.js')
-const pool = require('../helpers/pool.js')
+const poolHelper = require('../helpers/pool.js')
 const axios = require('axios');
 const https = require('https');
+const mysql = require('mysql2/promise');
 
 var httpsAgent = new https.Agent({rejectUnauthorized: false});
 
@@ -34,9 +35,11 @@ const visMinRegions = [
 async function getData(query, limit) {
     
     try {
-        await pool.pool_main.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
-        await pool.pool_main.query('START TRANSACTION');
-        const [rows] = await pool.pool_main.query(
+        const connection = await pool.createPool(poolHelper.pool_main).getConnection()
+
+        await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+        await connection.query('START TRANSACTION');
+        const [rows] = await connection.query(
         `
         SELECT * 
         FROM Appointments.appointments
@@ -50,21 +53,24 @@ async function getData(query, limit) {
         OFFSET ${(query.page-1)*limit}
         `
         )
-        await pool.pool_main.query('COMMIT');
+        await connection.query('COMMIT');
+        connection.release();
         return rows;
     } catch (error) {
         console.log("PRIMARY DATABAS IS OFFLINE");
-        await pool.pool_main.query('COMMIT');
+        await connection.query('COMMIT');
     }
 
     try {
-        await pool.pool_luzon.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
-        await pool.pool_vismin.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+        const connection_1 = await pool.createPool(poolHelper.pool_luzon).getConnection()
+        const connection_2 = await pool.createPool(poolHelper.pool_vismin).getConnection()
+        await connection_1.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+        await connection_2.query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
         
-        await pool.pool_luzon.query('START TRANSACTION');
-        await pool.pool_vismin.query('START TRANSACTION');
+        await connection_1.query('START TRANSACTION');
+        await connection_2.query('START TRANSACTION');
         var newLimit = Math.ceil(limit/2)
-        var [row0] = await pool.pool_luzon.query(
+        var [row0] = await connection_1.query(
             `
             SELECT * 
             FROM Appointments.appointments
@@ -73,7 +79,7 @@ async function getData(query, limit) {
             `
             )
         
-        var [row1] = await pool.pool_vismin.query(
+        var [row1] = await connection_2.query(
         `
         SELECT * 
         FROM Appointments.appointments
@@ -81,14 +87,16 @@ async function getData(query, limit) {
         OFFSET ${(query.page-1)*newLimit}
         `
         )
-        await pool.pool_luzon.query('END TRANSACTION');
-        await pool.pool_vismin.query('END TRANSACTION');
+        await connection_1.query('END TRANSACTION');
+        await connection_2.query('END TRANSACTION');
         console.log(row0.concat(row1));
+        connection_1.release();
+        connection_2.release();
         return row0.concat(row1);
     } catch (error) {
         console.log("SECONDARY DATABASES ARE OFFLINE");
-        await pool.pool_luzon.query('END TRANSACTION');
-        await pool.pool_vismin.query('END TRANSACTION');
+        await poolHelper.pool_luzon.query('END TRANSACTION');
+        await poolHelper.pool_vismin.query('END TRANSACTION');
     }
 }
 
@@ -343,7 +351,7 @@ async function addData(data) {
 async function getMax(query){
 
     try {
-    const [rows] = await pool.pool_main.query(
+    const [rows] = await poolHelper.pool_main.query(
         `
         SELECT COUNT(*) as count
         FROM Appointments.appointments
@@ -359,7 +367,7 @@ async function getMax(query){
         
     }
     try {
-        const [rows0] = await pool.pool_luzon.query(
+        const [rows0] = await poolHelper.pool_luzon.query(
             `
             SELECT COUNT(*) as count
             FROM Appointments.appointments
@@ -371,7 +379,7 @@ async function getMax(query){
             HospitalRegionName LIKE ${query.HospitalRegionName} 
             `  
         )
-        const [rows1] = await pool.pool_luzon.query(
+        const [rows1] = await poolHelper.pool_luzon.query(
             `
             SELECT COUNT(*) as count
             FROM Appointments.appointments
@@ -412,9 +420,9 @@ function findNode(region) {
 async function selectNode(region) {
     switch (findNode(req.body.HospitalRegionName)) {
         case "Luzon":
-            return await pool.pool_luzon.getConnection()
+            return await poolHelper.pool_luzon.getConnection()
         case "VisMin":
-            return await pool.pool_vismin.getConnection()
+            return await poolHelper.pool_vismin.getConnection()
         default:
             return null;
     }
@@ -546,7 +554,8 @@ const controller = {
 
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|UPDATE`);
-            pool.pool_current.getConnection(async function (err, connection) {  
+            
+            poolHelper.pool_current.getConnection(async function (err, connection) {  
                 try {
                     await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
                     await connection.beginTransaction();
@@ -584,8 +593,6 @@ const controller = {
                     console.log(err);
                     logs.logTransaction(`${transactionID}|ABORT|UPDATE`);
                     logs.logTransaction(`${checkpointID}|CHECKPOINT`);
-                    await connection.rollback()
-                    connection.releaseConnection();
                 }
     
             });
@@ -599,10 +606,13 @@ const controller = {
         var transactionID = req.body.transactionID;
         var checkpointID = req.body.checkpointID;
 
+        const pool = mysql.createPool(poolHelper.pool_current);
+
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|DELETE`);
             try {
-                var connection = await pool.pool_current.getConnection();
+                const connection = await pool.getConnection();
+
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE');
                 await connection.beginTransaction();
             
@@ -617,7 +627,7 @@ const controller = {
                 logs.logTransaction(`${transactionID}|COMMIT|DELETE`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 await connection.commit();
-                pool.pool_current.releaseConnection();
+                connection.releaseConnection();
             } catch (error) {
                 logs.logTransaction(`${transactionID}|ABORT|DELETE`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
@@ -637,7 +647,7 @@ const controller = {
         if (process.env.SERVER_NAME == 'Main' || process.env.SERVER_NAME == findNode(req.body.HospitalRegionName)) {
             logs.logTransaction(`${transactionID}|START|INSERT`);
             try {
-                var connection = await pool.pool_current.getConnection();
+                var connection = await poolHelper.pool_current.getConnection();
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITED');
                 await connection.beginTransaction();
     
@@ -695,13 +705,13 @@ const controller = {
                 logs.logTransaction(`${transactionID}|COMMIT|INSERT`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 await connection.commit();
-                pool.pool_current.releaseConnection();
+                poolHelper.pool_current.releaseConnection();
             } catch (error) {
                 console.log("ERR: ", error);
                 logs.logTransaction(`${transactionID}|ABORT|INSERT`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 await connection.rollback()
-                pool.pool_current.releaseConnection();
+                poolHelper.pool_current.releaseConnection();
             }    
         }
     },
