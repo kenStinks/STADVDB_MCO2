@@ -594,7 +594,7 @@ const controller = {
     
                 logs.logTransaction(`${transactionID}|COMMIT|UPDATE`);
                 logs.logTransaction(`${checkpointID}|CHECKPOINT`);
-                await connection.query('COMMIT TRANSACTION');
+                await connection.query('COMMIT');
                 connection.release();
             } catch (err) {
                 console.log(err);
