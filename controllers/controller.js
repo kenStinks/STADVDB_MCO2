@@ -150,6 +150,26 @@ async function updateData(data) {
     var checkpointID = logs.generateUUID();
     formData.checkpointID = checkpointID;
 
+    try {
+        const connection = await mysql.createPool(poolHelper.pool_current).getConnection();
+        
+        const ids = await connection.query(
+            `
+            SELECT * 
+            FROM Appointments.appointments
+            WHERE AppointmentID = "${data.AppointmentID}"
+            `
+        );
+
+        formData.ClinicID = ids.ClinicID;
+        formData.DoctorID = ids.DoctorID;
+        formData.PatientID = ids.PatientID;
+        
+        connection.release()
+    } catch (error) {
+        
+    }
+
     console.log(process.env.VM_INTERNAL_IP_0);
     axios.post(`${process.env.VM_INTERNAL_IP_0}/update_solo`, formData
     ).catch(err => console.log('UPDATE: ', 'NODE MAIN OFFLINE ', err));
@@ -526,8 +546,9 @@ const controller = {
         if(data.isVirtual) 
         {
             data.IsVirtualInt = 1;
-        }else {data.IsVirtualInt = 0;}
-        // console.log(data)
+        } else {
+            data.IsVirtualInt = 0;
+        }
 
         updateData(data)
     },
@@ -540,10 +561,13 @@ const controller = {
 
     addID: async function (req, res) {
         var data = req.body
+        
         if(data.isVirtual) 
         {
             data.IsVirtualInt = 1;
-        } else {data.IsVirtualInt = 0;}
+        } else {
+            data.IsVirtualInt = 0;
+        }
 
         addData(data)
     },
@@ -574,13 +598,7 @@ const controller = {
 
                 var isHospital = data.HospitalName ? 0 : 1;
 
-                const ids = await connection_main.query(
-                    `
-                    SELECT * 
-                    FROM Appointments.appointments
-                    WHERE AppointmentID = "${data.AppointmentID}"
-                    `
-                );
+
 
                 var query = 
                 `
@@ -605,9 +623,9 @@ const controller = {
                     HospitalProvince
                 ) VALUES 
                 ("${data.AppointmentID}", 
-                "${ids.ClinicID}", 
-                "${ids.DoctorID}", 
-                "${ids.PatientID}",
+                "${data.ClinicID}", 
+                "${data.DoctorID}", 
+                "${data.PatientID}",
                 "${data.DoctorMainSpecialty}",
                 "${data.HospitalName}",
                 "${data.HospitalCity}",
