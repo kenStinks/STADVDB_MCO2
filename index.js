@@ -36,9 +36,3 @@ app.use(express.static('logs'));
 app.listen(process.env.SERVER_PORT, function () {
     console.log(`app listening at ${process.env.SERVER_HOST}:` + process.env.SERVER_PORT);
 });
-
-app.post('/update_solo', function(request, response){
-    message = request.body.message;
-    console.log("Message: " + message);
-    response.send('Server response message!!');
-})
