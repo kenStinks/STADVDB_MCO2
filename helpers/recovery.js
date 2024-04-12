@@ -256,6 +256,7 @@ const recovery = {
                             start_uuid = '';
                             data = {};
                         } else {
+                            console.log(`SAVING DATA ${split[1]}`, split[2], 'FOR RECOVERY')
                             data[split[1]] = data.split[2];
                         }   
                     }
