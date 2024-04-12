@@ -550,7 +550,6 @@ const controller = {
     },
 
     soloUpdateID: async function (req, res) {
-        const mysql = require('mysql2/promise');
         res.end();
         console.log('Solo Update Begin');
 
@@ -563,7 +562,7 @@ const controller = {
             
             logs.logTransaction(`${transactionID}|START|UPDATE`);
             try {
-                const connection = mysql.createPool(poolHelper.pool_current).getConnection();  
+                const connection = await mysql.createPool(poolHelper.pool_current).getConnection();  
                 await connection.query('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 await connection.query('START TRANSACTION');
     
