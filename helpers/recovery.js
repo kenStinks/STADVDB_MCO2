@@ -110,7 +110,7 @@ const recovery = {
                             start_uuid = '';
                             data = {};
                         } else {
-                            data[split[1]] = data.split[2];
+                            data[split[1]] = split[2];
                         }   
                     }
                     console.log('END RECOVERY LUZON', last_checkpoint);
@@ -178,7 +178,7 @@ const recovery = {
                             start_uuid = '';
                             data = {};
                         } else {
-                            data[split[1]] = data.split[2];
+                            data[split[1]] = split[2];
                         }   
                     }
                     console.log('END RECOVERY VISMIN', last_checkpoint);
@@ -257,8 +257,8 @@ const recovery = {
                             data = {};
                         } else {
                             console.log(`SAVING DATA ${split[1]}`, split[2], 'FOR RECOVERY')
-                            data[split[1]] = data.split[2];
-                        }   
+                            data[split[1]] = split[2];
+                        }
                     }
                     console.log('END RECOVERY', last_checkpoint);
                 }
