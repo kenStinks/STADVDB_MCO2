@@ -699,10 +699,11 @@ const controller = {
                 } else {
                     console.log(`Deletion of Data ${data.id} FAIL it does not exists`);
                 }
-
+                logs.logTransaction(`${checkpointID}|CHECKPOINT`);
                 connection.release();
             } catch (error) {
                 console.log(err);
+                logs.logTransaction(`${checkpointID}|CHECKPOINT`);
             }
         }
     },
