@@ -819,17 +819,6 @@ const controller = {
 
     getLog: async function(req, res)
     {
-        fs.open('./logs/logs.txt', (error, data) => {
-            if (error) {
-                fs.writeFile('./logs/logs.txt', '', (error, data) => {
-                    if (error) {
-                    }
-                    console.log('created log file');
-                })
-            } else {
-                console.log('log file exists');
-            }
-        });
         fs.readFile('./logs/logs.txt', (error, data) => {
             if (error) {
                 console.log(error);

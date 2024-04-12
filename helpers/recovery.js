@@ -28,7 +28,22 @@ const recovery = {
         var last_checkpoint = '';
         var start_recover_index = "No Start Index";
         
-        const file = fs.readFileSync('./logs/logs.txt');
+        const file = fs.readFileSync('./logs/logs.txt', (err, data) => {
+            if (err) {
+                fs.open('./logs/logs.txt', (error, data) => {
+                    if (error) {
+                        fs.writeFile('./logs/logs.txt', '', (error, data) => {
+                            if (error) {
+                            }
+                            console.log('created log file');
+                        })
+                    } else {
+                        console.log('log file exists');
+                    }
+                });
+                throw err;
+            }
+        });
         const lines = file.toString().split('\n');
         console.log(lines);
         
