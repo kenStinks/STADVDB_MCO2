@@ -290,7 +290,6 @@ async function updateData(data) {
 }
 
 async function addData(data) {
-
     
     var transactionID = logs.generateUUID();
     var formData = data;
@@ -298,8 +297,10 @@ async function addData(data) {
     var checkpointID = logs.generateUUID();
     formData.checkpointID = checkpointID;
 
+    console.log(data);
+
     var AppointmentID = logs.generateUUID();
-    formData.AppointmentID = AppointmentID.replaceAll('-', '');
+    formData.AppointmentID = AppointmentID.replace(/-/g,"");
     console.log(formData.AppointmentID);
     var ClinicID = logs.generateUUID();
     formData.ClinicID = ClinicID.replaceAll('-', '');
@@ -541,7 +542,7 @@ const controller = {
         var data = req.body
         console.log(data.isVirtual)
 
-        if(data.isVirtual.localeCompare(true)) 
+        if(data.isVirtual.localeCompare('true')) 
         {
             data.IsVirtualInt = 1;
         } else {
@@ -560,7 +561,7 @@ const controller = {
     addID: async function (req, res) {
         var data = req.body
         
-        if(data.isVirtual.localeCompare(true)) 
+        if(data.isVirtual.localeCompare('true')) 
         {
             data.IsVirtualInt = 1;
         } else {
