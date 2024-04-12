@@ -541,7 +541,7 @@ const controller = {
         var data = req.body
         console.log(data.isVirtual)
 
-        if(data.isVirtual) 
+        if(data.isVirtual.localeCompare(true)) 
         {
             data.IsVirtualInt = 1;
         } else {
@@ -560,7 +560,7 @@ const controller = {
     addID: async function (req, res) {
         var data = req.body
         
-        if(data.isVirtual) 
+        if(data.isVirtual.localeCompare(true)) 
         {
             data.IsVirtualInt = 1;
         } else {
