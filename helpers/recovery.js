@@ -28,7 +28,7 @@ const recovery = {
         const filePath = '/get_log';
 
         var last_checkpoint = '';
-        var start_recover_index;
+        var start_recover_index = "No Start Index";
         
         fs.readFile('./logs/logs.txt', (error, data) => {
             if (error) {
@@ -215,11 +215,12 @@ const recovery = {
                         const split = lines[index].split('|')
                         if (split[1] == 'CHECKPOINT' && last_checkpoint == split[0]) {
                             start_recover_index = lines.length - index + 1;
-                            console.log("START RECOVER INDEX: " + start_recover_index);
                             break;
                         }  
                     }
-    
+                    
+                    console.log("START RECOVER INDEX: " + start_recover_index);
+                    
                     console.log('START RECOVERY', last_checkpoint);
 
                     for (let index = start_recover_index; index < lines.length; index++) {
